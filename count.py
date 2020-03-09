@@ -30,6 +30,13 @@ def sum_profile(T_1,T_2):
     p1 = len(T_1)
     p2 = len(T_2)
     Tr = [0]*(max(p1,p2))
+
+    if p1 == 0 :
+        return T_2
+    
+    if p2 == 0:
+        return T_1
+
     for i in range(min(p1,p2)):
         Tr[i] = T_1[i]+T_2[i]
     if(p1 > p2):
@@ -81,7 +88,7 @@ def count (n,profile,s):
             else:
                 for k_0 in range(1,k):
                     d_0.union( count(i, profile[:k-1], profile[k-1]) )
-            for (l,w_0) in d_0:
+            for (l,w_0) in d_0.items():
                 d_1 = {}
                 pp  = sum_profile(profile,l)
                 if n-1-i == 0:
