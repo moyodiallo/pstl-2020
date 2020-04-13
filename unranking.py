@@ -122,67 +122,83 @@ class Node:
         self.right = right
         self.index = index
         self.label = label
+
+    def __eq__(self, value):
+        return self.label == value.label
+    
+    def __hash__(self):
+        return self.label
+
+    def do_ch(self):
+        dot = ''
+        n = [left,right]
+        #for i in range(len(n)):
+        #    if n[i].rank 
+        dot+= str(self.left.rank)+'->'+str(self.rank)+';'
+        dot+= str(self.right.rank)+'->'+str(self.rank)+';'
         
 class Spine:
-    """Un spine qui est une list:
-        label 0 -> True;
-        label 1 -> False
+    """ Une classe pour construire un BDD
     """
     def __init__(self,k):
-        self.spine      = [Node(0,0,0,0,0),Node(1,0,0,0,0)]
+        self.spine       = [[]]*(k+1)
         self.label      = 2
         self.profile    = [0]*(k+1)
+        self.forbiden   = {}
         self.profile[0] = 2
-        
+        self.spine[0].append(Node(0,-1,0,-1,-1))
+        self.spine[0].append(Node(1,-1,0,-1,-1))
         
     def unrank_singleton(self,rank):
-        """ Suivre l'ordre <| pour le rank
+        """ Suivre l'ordre < pour le rank
         """
         r = rank
-        index = -1
-        for i in range(len(self.profile)):
-            r = r - self.profile[i]
-            if r < 0 :
-                r = r + self.profile[i]
-                index = i
-                break
-        if index == -1:
-            raise Exception('unrank_singleton fail index')
         for i in range(len(self.spine)):
-            if self.spine[i].index == index:
-                if r == 0:
-                    return self.spine[i]
-                r = r - 1
-        raise Exception('unrank_singleton fail')
-        
+                for j in range(len(self.spine[i])):
+                    node = self.spine[i][j]
+                    if r == 0:
+                        return node
+                    r = r - 1
+        raise Exception('unrank_singleton fail index')
+    
     def unrank_pair(self,rank,k):
         r = rank
-        node1 = 0
-        node2 = 0
-        for i in range(r,len(self.spine)):
-            if(self.spine[i].index < k):
-                node1 = self.spine[i]
-                r = i+1
-                break
-        if node1 == 0:
-            raise Exception('unrank_pair: fail node1')
-        for i in range(r,len(self.spine)):
-            if self.spine[i].index < k:
-                node2 = self.spine[i]
-                break
-        if node2 == 0:
-            raise Exception('unrank_pair: fail node2')
-        return node1,node2
-                
+        for i in range(k):
+            for a in range(len(self.spine[i])):
+                n = self.spine[i][a]
+                if k in self.forbiden and n in self.forbiden[k]:
+                    f = len(self.forbiden[k][n])
+                else:
+                    f = 0
+                if rank >= len(self.spine[i]) - 1 - f:
+                    r = r - (len(self.spine[i])) - 1 - f
+                else:
+                    for b in range(len(self.spine[i])):
+                        x = self.spine[i][a]
+                        y = self.spine[i][b]
+                        if x != y and (
+                            (k not in self.forbiden) or
+                            (x not in self.forbiden[k]) or 
+                            (y not in self.forbiden[k][x])
+                        ):
+                            r = r - 1
+                        if r == -1:
+                            return (x,y)
+        raise Exception('unrank_pair fail')
         
     def get_rank(self,i):
         return i.rank
         
     def add_node(self,rank,index,left,right):
         n = Node(self.label,rank,index,left,right)
-        self.spine.append(n)
+        self.spine[index].append(n)
         self.label += 1
         self.profile[index] += 1
+        if index not in self.forbiden:
+            self.forbiden[index] = {}
+        if n.left not in self.forbiden[index]:
+            self.forbiden[index][n.left] = []
+        self.forbiden[index][n.left].append(n.right)
         return n
         
     def get_profile(self):
@@ -206,24 +222,26 @@ def gen_bdd(rank, n, k):
     p    = [0]*k
     p[0] = 2
     d = count(n-2,p,0)
-    print(d)
+    print('counted '+str(d))
     for (t,w) in d.items():
         r = r - w
         if r < 0:
             r = r + w
             generate(r,n-2,spine,t)
+            print('profile_final '+str(spine.profile))
             return spine
+    raise Exception('Pas BDD')
         
 def generate(rank, n, spine, p_target):
-    print('generate rank='+str(rank)+" k="+str(len(p_target))+" n="+str(n)+
+    print('generate rank='+str(rank)+" k="+str(len(p_target)-1)+" n="+str(n)+
     " targ="+str(list(p_target)))
-    k = len(p_target)
+    k = len(p_target)-1
+    print('profile ',end='')
+    print(spine.profile)
     if n == 0 :
         return spine.unrank_singleton(rank)
     if n == 1 :
-        print('profile ',end='')
-        print(spine.profile)
-        lo,hi = spine.unrank_pair(rank, k)
+        lo,hi = spine.unrank_pair(rank,k)
     else:
         i,r0,l,r1,h = decompose(rank,n,spine,p_target)
         lo = generate(r0,i,spine,l)
@@ -242,6 +260,7 @@ def decompose(rank, n, spine, p):
     s = spine.get_profile()
     k = len(p_target)-1
     q = s[:k]
+    q[0] = 2
     i = n-1
     while i >= 0:
         print('decompose '+str(i))
@@ -272,14 +291,16 @@ def decompose(rank, n, spine, p):
                         r  = r + w
                         r0 = r % w0
                         r1 = r // w0
+                        print('w0='+ str(w0))
+                        print('w1='+ str(w1))
                         return (i,r0,l,r1,h)
         i = i - 1
     raise Exception('decompose: fail')
 
-print(count(5,[2,0,0],0))
+print(count(7,[2,0,0,0],0))
 
 #gen_bdd(rank,n,k) 
 #rank -- rang
 #n    -- taille de l'arbre True et False compris
 #k    -- nombre de variable, c'est-a-dire l'index max
-gen_bdd(60,7,3)
+gen_bdd(50,7,3)
