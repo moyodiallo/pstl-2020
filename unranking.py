@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys
 
 def sum(T,i,k):
     """Fonction qui somme les entiers du Tableau T
@@ -184,18 +185,18 @@ class Spine:
         return len(self.profile)-1
 
     def affiche(self):
-        dot = 'digraph { node [shape=point]; edge [arrowhead=none];\n'
-        dot += '0[label=True];1[label=False];'
+        dot = 'digraph {\n'
+        dot += '0[label=Vrai];1[label=Faux];'
         return dot + self.root().dot_ch() + '}'
 
     def stocke(self):
         dot = self.affiche()
 
-        fic = open("test/arbre_taille_" 
+        fic = open("arbre_taille_" 
         + str(self.size()) 
         + "_variable_" 
         + str(self.variable())
-        +".dot", "w")
+        +".dot", 'w')
 
         fic.write(dot)
         fic.close()
@@ -214,11 +215,11 @@ class Spine:
         raise Exception('unrank_singleton fail index')
     
     def unrank_pair(self,rank,k):
-        print("unrank_pair rank="+str(rank)+" k="+str(k))
-        self.print_forbiden()
+        #print("unrank_pair rank="+str(rank)+" k="+str(k))
+        #self.print_forbiden()
         r = rank
         for i in range(k):
-            print(" spinelen="+str(len(self.spine[i])))
+            #print(" spinelen="+str(len(self.spine[i])))
             for a in range(len(self.spine[i])):
                 n = self.spine[i][a]
                 if k in self.forbiden and n in self.forbiden[k]:
@@ -232,19 +233,15 @@ class Spine:
                     for b in range(len(self.spine[i])):
                         x = self.spine[i][a]
                         y = self.spine[i][b]
-                        print(r)
-                        print("x="+str(x.label)+" y="+str(y.label))
-                        print((k not in self.forbiden) or
-                            (x not in self.forbiden[k]))
+                        #print("x="+str(x.label)+" y="+str(y.label))
                         if x != y and (
                             (k not in self.forbiden) or
                             (x not in self.forbiden[k]) or 
                             (y not in self.forbiden[k][x])
                         ):
                             r = r - 1
-                            print(r)
                         if r == -1:
-                            print("ch x="+str(x.label)+" y="+str(y.label))
+                            #print("ch x="+str(x.label)+" y="+str(y.label))
                             return (x,y)
         raise Exception('unrank_pair fail')
         
@@ -278,29 +275,26 @@ def gen_bdd(rank, n, k):
             
             k{integer}    -- nombre de variables
     """
-    print('gen_bdd')
+    print('gen_bdd...')
     spine = Spine(k)
     r    = rank
     p    = [0]*k
     p[0] = 2
     d = count(n-2,p,0)
-    print('counted '+str(d))
+    #print('counted '+str(d))
     for (t,w) in d.items():
         r = r - w
         if r < 0:
             r = r + w
             generate(r,n-2,spine,t)
-            print('profile_final '+str(spine.profile))
-            print('spine final   '+str(spine.spine))
+            print('profile finale '+str(spine.profile))
+            print('spine finale   '+str(spine.spine))
             return spine
     raise Exception('Pas BDD')
         
 def generate(rank, n, spine, p_target):
-    print('generate rank='+str(rank)+" k="+str(len(p_target)-1)+" n="+str(n)+
-    " targ="+str(list(p_target)))
+    #print('generate rank='+str(rank)+" k="+str(len(p_target)-1)+" n="+str(n)+" targ="+str(list(p_target)))
     k = len(p_target)-1
-    print('profile ',end='')
-    print(spine.profile)
     if n == 0 :
         return spine.unrank_singleton(rank)
     if n == 1 :
@@ -311,13 +305,13 @@ def generate(rank, n, spine, p_target):
         if(n-i-1 == 0) and spine.get_rank(lo) <= r1:
             r1 = r1 + 1
         hi = generate(r1, n-1-i, spine, h)
-    print('adding node rank='+str(rank)+" k="+str(k))
+    #print('adding node rank='+str(rank)+" k="+str(k))
     node = spine.add_node(rank,k,lo,hi)
     return node
 
 def decompose(rank, n, spine, p):
-    print("decompose looking ",end="")
-    print(p)
+    #print("decompose looking ",end="")
+    #print(p)
     p_target = list(p)
     r = rank
     s = spine.get_profile()
@@ -326,7 +320,7 @@ def decompose(rank, n, spine, p):
     q[0] = 2
     i = n-1
     while i >= 0:
-        print('decompose '+str(i))
+        #print('decompose '+str(i))
         if i == 0:
             d0 = {(): sum(q,1,k-1)+2}
         else:
@@ -344,32 +338,28 @@ def decompose(rank, n, spine, p):
             for (h,w1) in d1.items():
                 t = sum_profile(sum_profile(e_k(k),list(l)),list(h))
                 w = w0*w1
-                print(t)
                 if t == p_target:
-                    print('decompose match ',end="")
-                    print(t)
+                    #print('decompose match ',end="")
+                    #print(t)
                     if w > 0:
                         r = r - w
                     if r < 0:
                         r  = r + w
                         r0 = r % w0
                         r1 = r // w0
-                        print('w0='+ str(w0))
-                        print('w1='+ str(w1))
+                        #print('w0='+ str(w0))
+                        #print('w1='+ str(w1))
                         return (i,r0,l,r1,h)
         i = i - 1
     raise Exception('decompose: fail')
 
+#counting
 print(count(7,[2,0,0,0],0))
 
 #gen_bdd(rank,n,k) 
 #rank -- rang
 #n    -- taille de l'arbre True et False compris
 #k    -- nombre de variable, c'est-a-dire l'index max
-spine = gen_bdd(50,7,3)
+spine = gen_bdd(400,7,4)
 print(spine.affiche())
-#print("spine value")
-#for i in range(len(spine.spine)):
-#    print(i)
-#   for j in range(len(spine.spine[i])):
-#        print(" "+str(spine.spine[i][j].index))
+spine.stocke()
