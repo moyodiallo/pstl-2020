@@ -185,6 +185,12 @@ class Spine:
         return len(self.profile)-1
 
     def affiche(self):
+        g = ("rank="+str(self.root().rank)
+        +" k_variable="
+        +str(len(self.profile)-2)
+        +"n_element="
+        +str(sum(self.profile,0,len(self.profile)-1)))
+
         dot = 'digraph {\n'
         dot += '0[label=Vrai];1[label=Faux];'
         return dot + self.root().dot_ch() + '}'
