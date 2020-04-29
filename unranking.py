@@ -111,7 +111,6 @@ def count (n,profile,s):
                     else:
                         d.update({tuple(t):w})
     return d
-
 #----------------------------------------------------------------------------------------------------
 
 class Node:
@@ -125,18 +124,25 @@ class Node:
         self.right = right
         self.index = index
         self.label = label
+        self.printed = False
 
     def __eq__(self, value):
         return self.label == value.label
+    
+    def __ne__(self,value):
+        return self.label != value.label
     
     def __hash__(self):
         return self.label
 
     def dot_ch(self):
+        if self.printed == True:
+            return ''
+        self.printed = True #afficher qu'une fois
         dot = ''
         #for i in range(len(self.spine)):
         if self.label != 0 and self.label != 1:
-            dot+= str(self.label)+"[label="+str(self.index)+"];"
+            dot+= str(self.label)+"[label=x"+str(self.index)+"_"+str(self.rank)+"];"
         if type(self.left) != int:
             dot+= str(self.label)+'->'+str(self.left.label)+'[style=dotted];'
             dot+= self.left.dot_ch()
@@ -158,21 +164,24 @@ class Spine:
         self.spine[0].append(Node(1,-1,0,-1,-1))
 
     def print_spine(self):
+        print('spine')
         for i in range(len(self.spine)):
             print('indexe='+str(i))
             for j in range(len(self.spine[i])):
                 print("     "+str(self.spine[i][j].label))
 
     def print_profile(self):
+        print('profile',end='')
         print(self.profile)
     
     def print_forbiden(self):
+        print('forbiden')
         for i in self.forbiden.keys():
             print('index='+str(i))
             for x in self.forbiden[i].keys():
-                print('     x='+str(x.label)+' -> values=',end='')
+                print('     x='+str(x.label)+'(index='+str(x.index)+') -> y-values=',end='')
                 for y in self.forbiden[i][x]:
-                    print(str(y.label),end=',')
+                    print(str(y.label)+'(index='+str(y.index)+')',end=',')
                 print()
 
     def root(self):
@@ -185,13 +194,14 @@ class Spine:
         return len(self.profile)-1
 
     def affiche(self):
+        
         g = ("rank="+str(self.root().rank)
-        +" k_variable="
-        +str(len(self.profile)-2)
-        +"n_element="
+        +" k="
+        +str(self.root().index)
+        +" n="
         +str(sum(self.profile,0,len(self.profile)-1)))
-
-        dot = 'digraph {\n'
+        
+        dot = 'digraph {graph [label="'+g+'", labelloc=t, fontsize=30];\n'
         dot += '0[label=Vrai];1[label=Faux];'
         return dot + self.root().dot_ch() + '}'
 
@@ -213,41 +223,44 @@ class Spine:
         """
         r = rank
         for i in range(len(self.spine)):
-                for j in range(len(self.spine[i])):
-                    node = self.spine[i][j]
-                    if r == 0:
-                        return node
-                    r = r - 1
+            for j in range(len(self.spine[i])):
+                node = self.spine[i][j]
+                if r == 0:
+                    return node
+                r = r - 1
         raise Exception('unrank_singleton fail index')
     
     def unrank_pair(self,rank,k):
-        #print("unrank_pair rank="+str(rank)+" k="+str(k))
+        print("unrank_pair rank="+str(rank)+" k="+str(k))
         #self.print_forbiden()
+        #self.print_profile()
         r = rank
         for i in range(k):
             #print(" spinelen="+str(len(self.spine[i])))
             for a in range(len(self.spine[i])):
                 n = self.spine[i][a]
-                if k in self.forbiden and n in self.forbiden[k]:
-                    f = len(self.forbiden[k][n])
-                else:
-                    f = 0
-                limit = len(self.spine[i]) - 1 - f
-                if r >= limit:
-                    r = r - limit
-                else:
-                    for b in range(len(self.spine[i])):
-                        x = self.spine[i][a]
-                        y = self.spine[i][b]
-                        #print("x="+str(x.label)+" y="+str(y.label))
-                        if x != y and (
-                            (k not in self.forbiden) or
-                            (x not in self.forbiden[k]) or 
-                            (y not in self.forbiden[k][x])
-                        ):
+                for j in range(0,k):
+                    for b in range(len(self.spine[j])):
+                        x = n
+                        y = self.spine[j][b]
+                        #print("x="+str(x.label)+" y="+str(y.label)+" i_k="+str(j)+' rank='+str(r))
+                        
+                        if x == y:
+                            continue
+                        
+                        constructed = True
+                        if  (k not in self.forbiden) or (x not in self.forbiden[k]) or (y not in self.forbiden[k][x]):
+                            constructed = False
+                            
+                        if constructed:
                             r = r - 1
-                        if r == -1:
-                            #print("ch x="+str(x.label)+" y="+str(y.label))
+                            continue
+                        
+                        if not constructed:
+                            r = r - 1
+                        
+                        if r < 0:
+                            print (x.label,y.label)
                             return (x,y)
         raise Exception('unrank_pair fail')
         
@@ -287,32 +300,37 @@ def gen_bdd(rank, n, k):
     p    = [0]*k
     p[0] = 2
     d = count(n-2,p,0)
-    #print('counted '+str(d))
+    print('counted '+str(d))
     for (t,w) in d.items():
         r = r - w
         if r < 0:
             r = r + w
             generate(r,n-2,spine,t)
             print('profile finale '+str(spine.profile))
-            print('spine finale   '+str(spine.spine))
+            #print('spine finale   '+str(spine.spine))
             return spine
     raise Exception('Pas BDD')
         
 def generate(rank, n, spine, p_target):
-    #print('generate rank='+str(rank)+" k="+str(len(p_target)-1)+" n="+str(n)+" targ="+str(list(p_target)))
+    #spine.print_forbiden()
+    #spine.print_profile()
+    print('generate rank='+str(rank)+" k="+str(len(p_target)-1)+" n="+str(n)+" targ="+str(list(p_target)))
     k = len(p_target)-1
     if n == 0 :
-        return spine.unrank_singleton(rank)
+        node = spine.unrank_singleton(rank)
+        print('***()***unrank singleton k='+str(node.index)+'('+str(node.label)+')')
+        return node
     if n == 1 :
         lo,hi = spine.unrank_pair(rank,k)
+        print("****!unrank_pair!** node k="+str(k)+" left="+str(lo.index)+'('+str(lo.label)+')'+" right="+str(hi.index)+'('+str(hi.label)+')')
     else:
         i,r0,l,r1,h = decompose(rank,n,spine,p_target)
         lo = generate(r0,i,spine,l)
-        if(n-i-1 == 0) and spine.get_rank(lo) <= r1:
-            r1 = r1 + 1
         hi = generate(r1, n-1-i, spine, h)
+        print("****!decomposed!*** node k="+str(k)+" left="+str(lo.index)+'('+str(lo.label)+')'+" right="+str(hi.index)+'('+str(hi.label)+')')
     #print('adding node rank='+str(rank)+" k="+str(k))
     node = spine.add_node(rank,k,lo,hi)
+    print("label k="+str(node.label))
     return node
 
 def decompose(rank, n, spine, p):
@@ -367,5 +385,5 @@ print(count(7,[2,0,0,0],0))
 #n    -- taille de l'arbre True et False compris
 #k    -- nombre de variable, c'est-a-dire l'index max
 spine = gen_bdd(400,7,4)
-print(spine.affiche())
+#print(spine.affiche())
 spine.stocke()
