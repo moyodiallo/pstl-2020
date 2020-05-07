@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+B = [1]
 
 def sum(T,i,k):
     """Fonction qui somme les entiers du Tableau T
@@ -47,11 +46,6 @@ def sum_profile(T_1,T_2):
         for i in range(p1,p2):
             Tr[i] = T_2[i]
 
-    print(T_1)
-    print(T_2)
-    print("som")
-    print(Tr)
-
     return Tr
 
 
@@ -70,17 +64,7 @@ def e_k(k):
     return l
 
 
-def count (n,profile,s):
-    """ L'algorithme de comptage
-    
-    Arguments:
-        n {integer}     -- taille du spine a construire
-        profile {array} -- la pool profile de debut
-        s {integer}     -- level set rank(sibling rank)
-    
-    Returns:
-        array -- Un tableau de couple (p,w). p est profile,w le poid du profile
-    """
+def enum_BDD(n,profile,s):
     d = {}
     k = len(profile)
 
@@ -96,7 +80,7 @@ def count (n,profile,s):
                 d_0 = {():sum(profile,0,k-1)}
             else:
                 for k_0 in range(1,k):
-                    d_0.update( count(i, profile[:k_0], profile[k_0]) )
+                    d_0.update( enum_BDD(i, profile[:k_0], profile[k_0]) )
             for (l,w_0) in d_0.items():
                 d_1 = {}
                 pp  = sum_profile(profile,list(l))
@@ -104,7 +88,7 @@ def count (n,profile,s):
                     d_1.update({():(-1 + sum(pp,0,k-1))})
                 else:
                     for k_1 in range(1,k):
-                        d_1.update(count(n-1-i,pp[:k_1],pp[k_1]))
+                        d_1.update(enum_BDD(n-1-i,pp[:k_1],pp[k_1]))
                 for (r,w_1) in d_1.items():
                     w = w_0*w_1
                     t = sum_profile(sum_profile(l,list(r)), e_k(k))
@@ -113,12 +97,14 @@ def count (n,profile,s):
                     else:
                         d.update({tuple(t):w})
     return d
-
-def count_init(nb):
+def enum(nb):
     pool_profile = list()
     pool_profile.append(2)
+    
     for i in range(nb-1):
         pool_profile.append(0)
-    return count(nb,pool_profile,0)
-#print(count(3,[2,0,0],0))
-print(count_init(3))
+    dico = enum_BDD(nb,pool_profile,0)
+    for tree in dico.values():
+        B.append(tree)
+    return B
+print(enum(5))
