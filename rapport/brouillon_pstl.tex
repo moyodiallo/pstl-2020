@@ -5,10 +5,12 @@
 \usepackage{babel}
 \usepackage{amsmath}
 \usepackage{graphicx}
-\usepackage{algpseudocode}
 \usepackage{hyperref}
+\usepackage{mathtools}
 
 \usepackage{biblatex}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 \addbibresource{biblio.bib} 
 
@@ -39,19 +41,21 @@
 Les fonction booléennes sont très largement utilisées en science. Elles sont aussi largement utilisées parce que simple à manipuler et à mettre en place, leur utilité est également très large. 
 \vspace{5mm} %5mm vertical space
 
-Les structures avec lesquelles nous travaillons dans ce papier sont ce que l'on appelle des robdd, reduced ordered binnary decision diagram. Ils représentent des fonctions booléennes en tant que diagramme avec leurs noeuds ordonnés et le nombre de ces noeuds réduit. Ils sont la méthode préférée pour représenter les fonctions booléenne en particulier en informatique. Quelques ligne de codes dans n'importe quel langage sont suffisantes pour les représenter.
+Les structures avec lesquelles nous travaillons dans ce papier sont ce que l'on appelle des robdd, reduced ordered binary decision diagram. Elles représentent des fonctions booléennes en tant que diagramme avec leurs noeuds ordonnés et le nombre de ces noeuds réduit. Elles sont l'une des méthode préférée pour représenter les fonctions booléenne en particulier en informatique. Elles sont préférées car facile à implémenter, quelques ligne de codes dans n'importe quel langage sont suffisantes pour les représenter, mais également parce qu'elles sont simple à manipuler.
 \vspace{5mm} %5mm vertical space
 
 En particulier nous cherchons à énumérer le nombre de robdd unique représentant une fonction ayant un nombre définie de variable selon leurs tailles. Ce problème a intéressé le domaine scientifique depuis que ces structures ont vu le jour, il présente de nombreux intérêts dans tous les domaines où l'on travail avec des robdd.
 \vspace{5mm} %5mm vertical space
 
-En plus de rappeler la methode standard de génération des robdd, nous donnons un nouveau moyen d'obtenir ces structures. Nous obtenons par cette nouvelle méthode un générateur uniforme de robdd.
+Puis en plus de rappeler la méthode standard de génération des robdd, nous donnons un nouveau moyen d'obtenir ces structures. Nous obtenons par cette nouvelle méthode un générateur uniforme de robdd que nous pouvons appliquer à plusieurs types de tests.
 
 \newpage
 
 
 \section{Introduction}
-L'idée derrière les diagrammes binaire a été introduite par Shannon en 1938 dans \cite{shannon}. Les diagrammes de fonction binaires sont principalement des outils pour les ingénieurs (et autre professions travaillant dans le hardware en informatique) qui manipulent des circuit électroniques, cas où l'utilisation de tables de vérité se révèle efficace. Plus particulièrement les circuits électroniques sont devenus si compliqués que les robdd sont à peine suffisant pour les traiter comme l'a noté Knuth il y a de ca plus de 10 ans \cite{knuth}.
+L'idée derrière les diagrammes de décision binaires a été introduite par Shannon en 1938 dans \cite{shannon}. Les diagrammes de fonction binaires sont principalement des outils pour les ingénieurs (et autre professions travaillant dans le hardware en informatique) qui manipulent des circuit électroniques, cas où l'utilisation de tables de vérité se révèle efficace. Dans ce cas là diviser leurs circuits complexes en sous circuits simple comme le permettent les diagrammes de décision binaires (concept que l'on appelle "diviser pour régner") est très efficace. 
+
+Plus particulièrement les circuits électroniques sont devenus si compliqués que les robdd sont à peine suffisant pour les traiter comme l'a noté Knuth il y a de ça plus de 10 ans \cite{knuth}.
 
 Les fonctions booléennes ont de très nombreux usages, dans \cite{cahier} P. Camion convertie de nombreux problemes du domaine des entiers en problèmes équivalent en algèbre booléenne et dans ce même papier R. Fortet a introduit l'idée de colorer un graphe selon 4 couleurs (theoreme des quatres couleurs \cite{dirac}) en assignant deux variables booléenne à chaque vertex.
 
@@ -65,33 +69,40 @@ Le principe d'un robdd est simple, on cherche à conserver de l'espace mémoire 
     \centering
     \includegraphics[width=6cm, height=6cm]{tree019}
     \includegraphics[width=6cm, height=6cm]{tree020}
-    \caption{Arbre représentant un bdd à gauche et dag représentant le robdd qui lui correspond à droite}
+    \caption{Arbre de decision binaire à gauche et dag représentant sa forme réduite}
     \label{fig:Figure1.1}
 \end{figure}
 \newpage
-Un exemple d'arbre représentant un bdd et un dag représentant le robdd correspondant à ce bdd sont donné dans la figure 1. Nous suivons ici le consensus dans la littérature et représentons les liens vers les fils haut par une ligne solide, et ceux vers les fils bas par une ligne en pointillé.
+Un exemple d'arbre de décision binaire et un dag représentant sa forme réduite sont donné dans la figure 1. Nous suivons ici le consensus dans la littérature et représentons les liens vers les fils haut par une ligne solide, et ceux vers les fils bas par une ligne en pointillé.
 
 En plus de l'utilité évidente des fonctions booléennes ont peut aussi noter que les bdd sont devenus aussi populaire parce que comme Knuth l'a noté dans \cite{knuth} les bdd simples sont relativement facile à fusionner pour obtenir des bdd plus complexes.
 
-Le but de ce papier est de présenter un nouveau procédé permettant d'énumérer des robdd sans passer par le processus de compression.
+Dans ce rapport notre but est de présenter un nouveau procédé permettant d'énumérer des robdd sans passer par le processus de compression.
 
 Le processus de compression est relativement simple avec une complexité P (polynomial), mais la méthode standard de génération des bdd d'un nombre donné de variable k utilisé jusqu'ici était impraticable pour {\(k > 4\)} \cite{newton}. Pour construire les bdd ayant k variable dans la méthode standard nous construisons tout d'abord toutes les fonctions booléennes ayant k variables, puis leurs bdd, puis compressons ces bdd afin d'obtenir leurs robdd et enfin nous supprimons les robdd apparaissant plus d'une fois. Ceci avait une complexité doublement exponentielle de  O(\( {2^2}^k\) ).
 
 Nous définissons la taille d'un robdd par le nombre de noeuds internes (non terminaux) qu'il contient.
 \newpage
-
-\[ICI CHOISIR BON PARAGRAPHE SELON COMPUTATION\]
-\vfill
-
-
-
 Pour énumérer ces structures dans la méthode que nous introduisons ici nous utilisons de nombreuses propriétés des robdd.  Nous utilisons ensuite des méthodes dites de unranking et ranking basées sur le modèle standard introduit dans \cite{wilf} en définissant un ordre total sur les robdd et en décomposant chacun par une constitution de sous robdd.
+
+Le processus de ranking consiste à attribuer à chaque objet d'un ensemble un identifiant unique, celui du unranking correspond au processus inverse, retrouver depuis son identifiant un objet au sein d'un ensemble.
 
 Nous obtenons grâce à cette méthode un générateur uniforme de robdd.
 
-Avec la méthode standard introduite dans \cite{newton} les robdd de taille proche de la taille maximal étaient crées avec une grande probabilité [7], mais dans celle ci chaque robdd a un identifiant unique dans l'ensemble. On peut également modifier ce générateur pour ne créer que des robdd ayant certaine classes de propriétés.
+Avec la méthode standard introduite dans \cite{newton} les robdd de taille proche de la taille maximal étaient crées avec une grande probabilité, mais dans celle ci chaque robdd a un identifiant unique dans l'ensemble. On peut également modifier ce générateur pour ne créer que des robdd ayant certaine classes de propriétés.
 
-Dans ce papier nous considérerons que nous ne rencontrons jamais le robdd réduit au noeud unique \(\top\) ou \(\bot.\)
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=11cm, height=8cm]{index5}
+    \caption{Distribution des taille de bdd ayant 5 variable}
+    \label{fig:Figure1.2}
+\end{figure}
+
+Avec notre méthode nous arrivons a comptabiliser les bdd ayant 5 variable, avec une implementation en python et un materiel limité, en 14 secondes.
+
+Nos resultats sont similaire a ce qui etait estimé dans \cite{newton} pour 5 variable (on rapelle qu'ici on ne prend pas en compte les feuille dans le calcul de la taille d'un bdd).
+
+Dans ce rapport nous considérerons que nous ne rencontrons jamais le robdd réduit au noeud unique \(\top\) ou \(\bot.\)
 \newpage
 \section{BDD et ROBDD}
 Dans cette section nous cherchons à définir les structures basique avec lesquelles nous travaillons, les bdd et les robdd. Aussi bien que comment nous les construisons.
@@ -111,14 +122,14 @@ La manière dont nous ordonnons les noeuds est importante comme noté dans \cite
 
 La chose importante ici est que les bdd vu en pratique ont tendance à avoir au moins un ordonnancement efficace de leurs noeuds où la taille de leurs robdd est bien inférieur à la leurs \cite{gropl}. Raison pour laquelle déterminer l'ordre le plus efficace est aussi important.
 
-La racine a un indexe k qui est l'indexe maximal de la bdd (ou robdd), et les noeuds terminaux ont des indexe nuls. Tous les noeuds internes (quand ils existent) ont des indexes allant de k à 0, non inclus. Pour un bdd l'indexe de la racine est le nombre de variables de la fonction booléenne qu'il représente, pas forcement pour un robdd.
+La racine a un index k qui est l'index maximal de la bdd (ou robdd), et les noeuds terminaux ont des index nuls. Tous les noeuds internes (quand ils existent) ont des indexes allant de k à 0, non inclus. Pour un bdd l'index de la racine est le nombre de variables de la fonction booléenne qu'il représente, pas forcement pour un robdd.
 
 Pour exécuter un bdd nous allons tout d'abord à la racine, puis nous suivons un chemin en se fiant à la valeur de chaque variable données en entrée selon l'indexe du noeud courant. Si la variable d'indexe du noeud courant est 0 nous nous rendons à l'enfant bas du noeud courant, l'enfant haut si la variable a pour valeur 1. Nous finissons par arriver à un noeud terminal, que dans le reste de ce papier nous appellerons feuille, de valeur \(\top\) (true) ou \(\bot\) (false) qui est la valeur de retour de la bdd pour les variables considérées.
 
 Pour le bdd de la figure 1 si l'on donnait les variables 101 en tant qu'entrées elle retournerait \(\top\) (true). 
 \newpage
 
-La méthode classique pour obtenir un robdd est de réduire un bdd non réduit. Définissons maintenant comment on effectue cette réduction.
+La méthode classique pour obtenir un robdd est de réduire un arbre de décision binaire. Définissons maintenant comment on effectue cette réduction.
 
 Pour effectuer cette réduction nous suivons tout d'abord deux règles, que nous notons R et M.
 
@@ -131,7 +142,7 @@ Considérons \(\Delta\) un dag représentant une fonction booléenne f. Considé
 Nous appliquons récursivement ses deux règles à tous les noeuds de \(\Delta\) .
 \vspace{5mm} %5mm vertical space
 
-Deux ordre de traversés peuvent être considérés, \(post_{ordre}\) et \(pre_{ordre}\).
+Deux ordres de parcours peuvent être considérés, \(post_{ordre}\) et \(pre_{ordre}\).
 Dans le \(post_{ordre}\) nous visitons tous d'abord l'enfant bas du noeud courant, puis son enfant haut et enfin le noeud lui-même.
 Dans le \(pre_{ordre}\) nous visitons tous d'abord le neoud courant, puis son enfant bas, et enfin son enfant haut.
 
@@ -161,7 +172,7 @@ Considérons un robdd \(\Delta\) = (Q, I, r, \(\delta\)). Q est l'ensemble de no
 Dans le reste de ce papier nous utiliserons le terme bdd pour faire référence aux robdd.
 \newpage
 \section{(RO)BDD : propriétés}
-Dans cette section nous définissons des propriété que l'on assigne aux bdd. Pour ce faire nous mettant en place un ensemble de notation et d'opérations. Toute les notations utilisés dans cette section seront utilisés dans le reste de ce papier. Les opérations que nous définissons pour les liste sont également applicables aux ensembles.
+Dans cette section nous définissons des propriété que l'on assigne aux bdd. Pour ce faire nous mettant en place un ensemble de notation et d'opérations. Toute les notations utilisés dans cette section seront utilisés dans le reste de ce rapport. Les opérations que nous définissons pour les liste sont également applicables aux ensembles.
 \vspace{5mm} %5mm vertical space
 
 Pour deux noeuds \(\alpha\) et \(\beta\) d'un dag \(\Phi\) nous écrivons \(\alpha\) \(\Leftarrow_{post}\) \(\beta\) si le neoud \(\alpha\) est visité avant le noeud \(\beta\) en \(post_{ordre}\) lors de la traversé de \(\Phi\), et \(\alpha\)\(\Leftarrow_{pre}\) \(\beta\) si le noeud \(\alpha\) est visité avant le noeud \(\beta\) en \(pre_{ordre}\) lors de la traversé de \(\Phi\).
@@ -172,7 +183,7 @@ Pour deux listes l et l’ de tailles respectives m et n, où l = (p0,p1…,pm) 
 Pour une liste l nous notons \(\mid l\mid \) le nombre d'élément dans l, et \(\mid\mid l\mid\mid\) la somme de tous ses éléments.
 \vspace{5mm} %5mm vertical space
 
-\textbf{Profile d'un ensemble}: Le profile P=profile(S) d'un ensemble S est simplement une liste du nombre d'élément de S ayant un certain indexe, on note P = (p0,p1…,pj,…pk) où pj est le nombre d'elements dans l'ensemble S d'index j et k l'index maximal de S. 
+\textbf{Profil d'un ensemble}: Le profile P=profile(S) d'un ensemble S est simplement une liste du nombre d'élément de S ayant un certain indexe, on note P = (p0,p1…,pj,…pk) où pj est le nombre d'elements dans l'ensemble S d'index j et k l'index maximal de S. 
 
 Le processus d'extension de cette définition de profile à des graphes est évident.
 \vspace{5mm} %5mm vertical space
@@ -338,7 +349,66 @@ Avec j = m-1-i, on note p[:i]=(\(p_0,p_1...p_i\)) pour designer dans un ensemble
 Avec algorithme nous ne considérons pour chaque récursion que les spine de même valeurs m, p et s. 
 En s'inspirant de ce procédé on peut écrire un algorithme COUNT(m,p,s) prenant en argument une taille de spine m, un profile p et un level rank s et retournant un dictionnaire où chaque clé est le profile d'un spine et la valeur la somme des poids des spine ayant ce profile. 
 
-Voir \ref{Appendix_3} pour un exemple de l'algorithme count.
+On decrit l'algorithme COUNT en pseudo code ci-dessous.
+\begin{algorithm}
+  \begin{algorithmic}[1]
+    \Statex
+    \Function{COUNT}{m,p,s}
+      \State \Let{$d\gets \{\}$}
+      \State \Let{$k\gets $Len(p)-1} \Comment{Len(p): renvoie la taille de la liste p}
+      \If{m=0}
+        \State \Let{$S\gets (\sum_{k-1}^{j=0} p_j)(\sum_{k-1}^{j=0} p_j-1)$}
+        \If{$S>0$}
+            \State \Let{$d \gets \{e^{(k)}:S\}$}
+        \EndIf
+      \Else
+        \For{$i \gets$ 0 to m$-1$}
+            \State \Let{$d_0\gets \{\}$}
+            \If{i=0}
+                \State \Let{$d_0 \gets \{():\sum_{k-1}^{i=0} p_i\}$}
+            \Else
+                \For{$k_0 \gets$ 1 to $k-1$}
+                    \State \Let{$d_0 \gets d_0 \cup COUNT(i,p[:k_0-1],p_{k_0})$}
+                \EndFor
+            \EndIf
+            \For{$(l,w_0) \gets d_0$}
+                \State \Let{$d_1\gets \{\}$}
+                \State \Let{$p\textquoteright \gets p+l$}
+                \If{n-1-i=0}
+                    \State \Let{$d_1 \gets \{():-1+\sum_{k-1}^{i=0} p_i\textquoteright\}$}
+                \Else
+                    \For{$k_1 \gets 1$ to $k-1$}
+                        \State \Let{$d_1 \gets d_1 \cup COUNT(n-1-i,p'[:k_1-1],p'_{k_1})$}
+                    \EndFor
+                \EndIf
+                \For{$(r,w_1) \gets d_1$}
+                    \State \Let{$w \gets w_1*w_0$}
+                    \State \Let{$t \gets l+r+e^{k}$}
+                    \If{$t\in d$}
+                        \State \Let{$d[t] \gets d[t]+w$}
+                    \Else
+                        \State \Let{$d \gets d \cup \{t:w\}$}
+                    \EndIf\EndFor\EndFor\EndFor\EndIf
+      \State \Return{$d$}
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+\newpage
+
+\(e^{(k)}\) est une liste de k+1 composants tous nul sauf le dernier qui est egal à 1 tel que \(e^{(k)} = (0,0,...,1)\).
+
+La complexité de l'algorithme COUNT est exponentionel de l'ordre de \(O(2^{3k^2/2+k})\).
+
+Quelques exemples d'execution de la fonction COUNT:
+\begin{itemize}
+    \item COUNT(3,(2,0,0),0) nous retourne \{(0,1,1,1): 56, (0,2,0,1): 2, (0,0,2,1): 2\}
+    \item COUNT(2,(2,0),0) nous retourne  \{(0,1,1): 8\}
+    \item COUNT(1,(2),1) nous retourne \{(0,1): 1\}
+    \item COUNT(1,(2),0) nous retourne \{(0,1): 2\}
+\end{itemize}
+
+Dans le premier cas le dictionnaire retourné nous indique qu'il existe 56 spine unique de taille 3 ayant pour profil (0,1,1,1), 2 ayant pour profil (0,2,0,1) et encore 2 ayant pour profil (0,0,2,1).
+
 \vspace{5mm} %5mm vertical space
 
 S'appuyant sur l'algorithme COUNT on definit N(n,k) qui renvoie le nombre de bdd de taille n et d'indexe k:
@@ -347,11 +417,155 @@ S'appuyant sur l'algorithme COUNT on definit N(n,k) qui renvoie le nombre de bdd
 
 \newpage
 \section{Unranking}
-Notre approche pour le unranking s'appuie sur la méthode introduite dans \cite{wilf} où chaque composé a un ordre definie dans l'ensemble et chacun de ces objets peut être décomposé en tant qu'ensemble de sous objets.
-Dans la precomputation on s'appuie sur ce que l'on a déjà défini pour déterminé le nombre d'objet (ici bdd) ayant une certaine taille afin de leur assigner à chacun un ordre.
+Notre approche pour le unranking s'appuie sur la méthode introduite dans \cite{wilf} où l'on decompose un arbre binaire en ses sous arbre gauche et droits et en attribuant à chaque décomposition un ordre total pour un bdd de taille et d'index fixé.
 
-[BESOIN DONNER PLUS APRES FIN ALGORITHME!!!]
-Voir Appendix \ref{Appendix_4} pour l'algorithme de unranking ainsi que celui de precomputation.
+En s'inspirant de la Proposition 3 on definie une methode recursif b permettant de determiner le nombre d'arbres binaire ayant une certaine taille n.
+
+\begin{equation}
+    b_n =
+    \begin{cases}
+        1 & \text{si n = 0}\\
+        \sum_{k=0}^{n-1}b_k*b_{n-1-k}  & \text{sinon}\\
+    \end{cases}      
+\end{equation}
+
+En s'appuyant sur cette methode on peut definir une decomposition sur un arbre de taille fixé n, cette methode s'apuie sur le fait que \(b_n\) est definie en une somme de produit, où chaque element de ce produit peut être vu comme la representation d'un arbre dont ayant un sous arbre gauche et un sous arbre droit de taille fixe. Par exemple \(B_7\) = 429, et on peut le decomposer en:
+\[B_7=B_0*B_6+B_1*B_5+B_2*B_4+B_3*B_3+B_4*B_2+B_5*B_1+B_6*B_0\]
+\[429=1*132+1*42+2*14+5*5+14*2+42*1+132*1\]
+
+Où \(B_2*B_4\) represente un arbre composé d'un sous arbre droit de taille 4 et d'un sous arbre gauche de taille 2.
+
+[citation]
+
+Ainsi, si je cherche l'arbre n°250, j'obtiens : 250 = 132 + 42 + 28 + 25 + 23. On trouve donc que l'arbre 250 est composé
+d'un enfant gauche de taille 4 et d'un enfant droit de taille 2. Et plus particulièrement, parmi les 28 arbres ayant cette
+décomposition 4x2, c'est l'arbre numéro 23 qui nous intéresse.
+
+[citation]
+
+Pour ensuite retrouver le numero des sous arbre gauche et droit on procede comme ceci:
+\begin{itemize}
+    \item 23 //\( B_2 \) pour le numero du sous arbre gauche
+    \item 23 \% \(B_2\)   pour le numero du sous arbre droit
+\end{itemize}
+
+En s'inspirant de cette methode on definie une methode DECOMPOSE(r\textquoteright,n\textquoteright,s,p\textquoteright) permettant de generer un bdd de taille n\textquoteright, ayant un profil p\textquoteright et un rang r\textquoteright. s est une variable contenant le spine du bdd a generer.
+
+\begin{algorithm}
+  \begin{algorithmic}[1]
+    \Statex
+        \Function{decompose}{$rank, n, spine, p$}
+            \State \Let{$p\_target \gets $list$(p)$} 
+            \State \Let{$r \gets rank$}
+            \State \Let{$s \gets spine.$get\_profile$()$}
+            \State \Let{$k \gets $len$(p\_target)-1$}
+            \State \Let{$q \gets s[:k]$}
+            \State \Let{$q[0] \gets 2$}
+            \State \Let{$i \gets  n-1$}
+            \While{$i \geq 0$}
+                \If{$i = 0$}
+                    \State \Let{$d0 \gets {(): $sum$(q,1,k-1)+2}$}
+                \Else
+                    \State \Let{$d0 \gets \{\}$}
+                    \For{$k0 \gets $range$(1,k)$}
+                        \State \Let{$d0.$update$($count$(i,q[:k0],q[k0]))$}
+                    \ENDFOR
+                \EndIf
+                \For{$(l,w0)$ in $d0.$items$()$}
+                    \State \Let{$q\_prim \gets $sum\_profile$(q,l) $}
+                    \If{$n-1-i = 0$}
+                        \State \Let{$d1 \gets \{():$sum$(q\_prim,1,k-1)+1\}$}
+                    \Else
+                        \State \Let{$d1 \gets \{\}$}
+                        \For{$k1$ in range$(1,k)$}
+                        \State \Let{$d1.$update$($count$(n$-$1$-$i,q\_prim[:k1],q\_prim[k1]))$}
+                        \EndFor
+                    \EndIf
+                    \For{$(h,w1) in d1.items()$}
+                        \State \Let{$t \gets sum\_profile(sum\_profile(e\_k(k),list(l)),list(h))$}
+                        \State \Let{$w \gets w0*w1$}
+                        \If{$t = p\_target$}
+                            \If{$w > 0$}
+                                \State \Let{$r \gets r - w$}
+                            \EndIf
+                            \If{$r < 0$}
+                                \State \Let{$r  \gets r + w$}
+                                \State \Let{$r0 \gets r \% w0$}
+                                \State \Let{$r1 \gets r // w0$}
+                                \State \Return{$(i,r0,l,r1,h)$}
+                            \EndIf
+                        \EndIf
+                    \EndFor
+                \ENDFOR
+                \State \Let{$i \gets i - 1$}
+  \end{algorithmic}
+\end{algorithm}
+\newpage
+
+On decrit ensuite un algorithme GENERATE(r,n,s,p) permettant de generer un spine de taille n, de profil p et de rang r. La variable s est une variable globale qui contiendra en fin d'execution le bdd generé.
+Cet algorithme prend en argument un spine s contenant les noeuds initialement dans la pool (ici \(\up\) et \(\bot\)) et crée au fur et a mesure le bdd souhaité en faisant appel a la fonction decompose et en mettant a jour le spine.
+
+\begin{algorithm}
+  \begin{algorithmic}[1]
+    \Statex
+        \Function{generate}{$rank, n, spine, p\_target$}
+            \State \Let{$k \gets $len$(p\_target)-1$}
+            \If{$n = 0$}
+                \State \Let{$node \gets spine.$unrank\_singleton$(rank)$}
+                \State \Return{$ node$}
+            \EndIf
+            \If{$n = 1$}
+                \State \Let{$lo,hi \gets spine.$unrank\_pair$(rank,k)$}
+            \Else
+                \State \Let{$i,r0,l,r1,h \gets $decompose$(rank,n,spine,p\_target)$}
+                \State \Let{$lo \gets $generate$(r0,i,spine,l)$}
+                \State \Let{$hi \gets $generate$(r1, n-1-i, spine, h)$}
+            \EndIf
+            \State \Let{$node \gets spine.$add\_node$(rank,k,lo,hi)$}
+            \State \Return{$node$}
+  \end{algorithmic}
+\end{algorithm}
+
+
+Dans la fonction generate on fait en sorte d'identifier les noeuds que l'on peut assigner aux nil-transitions du noeud courant. Pour un noeud v ayant deux nil-trnasitions on verifie donc avant de lui assigner en tant que haut fils un noeud n et fils bas un noeud m que I(m)<I(v) et I(n)<I(v), on verifie egalement qu'il n'existe pas v\textquoteright \(\in\) spine tel que v!=v\textquoteright, où v\textquoteright a pour fils bas m\textquoteright et pour fils haut n\textquoteright, que m=m\textquoteright et n=n\textquoteright.
+
+On fait ensuite de même lorsque le noeud courant a une seul nil-transitions en tant que fils bas ou en tant que fils haut tout en respectant les regle que l'on a deja decrit pour la generation des bdd. 
+
+Pour cela on utilise ces fonctions:
+\begin{itemize}
+    \item unrank\_singleton(r) : cette fonction retourne un noeud comptatible avec le noeud courant de rang r.
+    \item unrank\_pair(rank, k) : Cette fonction retourne une pair de noeud dont l'index est strictement inferieur à k, on omet egalement les pair de noeuds deja assignés en tant que descendant d'un noeud precedent de même index.
+    
+%    \item  get\_rank(i) : Cette fonction retourne le noeud de rang i compatible avec le noeud courant.
+%    \item get\_profile() : Cette fonction retourne retourne le profile du spine courant.
+% On a pas l'air d'utiliser ces deux la???
+    \item add\_node(lo, hi, k): Cette fonction crée le noeud d'index k et ayant pour descendants bas et haut lo et hi.
+\end{itemize}
+
+\newpage
+
+Enfin on decrit un algorithme GEN\_BDD(r,n,k) permettant de generer un bdd de taille n, d'index k et de rang r en utilisant la fonction generate decrite precedemment.
+
+\begin{algorithm}
+  \begin{algorithmic}[1]
+    \Statex
+        \Function{gen\_bdd}{$rank, n, k$}
+            \State \Let{$spine \gets $Spine$(k)$}
+            \State \Let{$r    \gets rank$}
+            \State \Let{$p    \gets [0]*k$}
+            \State \Let{$p[0] \gets 2$}
+            \State \Let{$d \gets $count$(n-2,p,0)$}
+            \For{$(t,w) in d.$items$()$}
+                \State \Let{$r \gets r - w$}
+                \If{$r < 0$}:
+                    \State \Let{$r \gets r + w$}
+                    \State \Let{generate$(r,n-2,spine,t)$}
+                    \State \Return{$ spine$}
+            \EndFor
+  \end{algorithmic}
+\end{algorithm}
+
+Spine est ici une classe d'objet permettant de representer un spine.
 
 La methode du unranking nous permet de mettre au point un generateur aleatoire uniforme de bdd.
 
@@ -422,57 +636,6 @@ On considère dans la figure 2 le dag d'un robdd. Les pointeurs sont représent�
 La pool du noeud entouré en vert est : \(\{x_2,x_2,x_1,x_1,\top,\bot\}\). 
 
 Le profile de ce robdd est : \{(2,2,4,2,1)\}.
-\newpage
-\subsection{Appendix 3}
-\label{Appendix_3}
-On decrit l'algorithme COUNT en pseudo code ci-dessous.
-\begin{algorithm}
-  \begin{algorithmic}[1]
-    \Statex
-    \Function{COUNT}{m,p,s}
-      \State \Let{$d\gets \{\}$}
-      \State \Let{$k\gets $Len(p)-1} \Comment{Len(p): renvoie la taille de la liste p}
-      \If{m=0}
-        \State \Let{$S\gets (\sum_{k-1}^{j=0} p_j)(\sum_{k-1}^{j=0} p_j-1)$}
-        \If{$S>0$}
-            \State \Let{$d \gets \{e^{(k)}:S\}$}
-        \EndIf
-      \Else
-        \For{$i \gets$ 0 to m$-1$}
-            \State \Let{$d_0\gets \{\}$}
-            \If{i=0}
-                \State \Let{$d_0 \gets \{():\sum_{k-1}^{i=0} p_i\}$}
-            \Else
-                \For{$k_0 \gets$ 1 to $k-1$}
-                    \State \Let{$d_0 \gets d_0 \cup COUNT(i,p[:k_0-1],p_{k_0})$}
-                \EndFor
-            \EndIf
-            \For{$(l,w_0) \gets d_0$}
-                \State \Let{$d_1\gets \{\}$}
-                \State \Let{$p\textquoteright \gets p+l$}
-                \If{n-1-i=0}
-                    \State \Let{$d_1 \gets \{():-1+\sum_{k-1}^{i=0} p_i\textquoteright\}$}
-                \Else
-                    \For{$k_1 \gets 1$ to $k-1$}
-                        \State \Let{$d_1 \gets d_1 \cup COUNT(n-1-i,p'[:k_1-1],p'_{k_1})$}
-                    \EndFor
-                \EndIf
-                \For{$(r,w_1) \gets d_1$}
-                    \State \Let{$w \gets w_1*w_0$}
-                    \State \Let{$t \gets l+r+e^{k}$}
-                    \If{$t\in d$}
-                        \State \Let{$d[t] \gets d[t]+w$}
-                    \Else
-                        \State \Let{$d \gets d \cup \{t:w\}$}
-                    \EndIf\EndFor\EndFor\EndFor\EndIf
-      \State \Return{$d$}
-    \EndFunction
-  \end{algorithmic}
-\end{algorithm}
-
-\(e^{(k)}\) est une liste de k+1 composants tous nul sauf le dernier qui est egal à 1 tel que \(e^{(k)} = (0,0,...,1)\).
-
-La complexité de l'algorithme COUNT est exponentionel de l'ordre de \(O(2^{3k^2/2+k})\).
 
 \subsection{Appendix 4}
 \label{Appendix_4}
