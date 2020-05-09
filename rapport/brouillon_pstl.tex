@@ -105,7 +105,7 @@ Nos resultats sont similaire a ce qui etait estimé dans \cite{newton} pour 5 va
 Dans ce rapport nous considérerons que nous ne rencontrons jamais le robdd réduit au noeud unique \(\top\) ou \(\bot.\)
 \newpage
 \section{BDD et ROBDD}
-Dans cette section nous cherchons à définir les structures basique avec lesquelles nous travaillons, les bdd et les robdd. Aussi bien que comment nous les construisons.
+Dans cette section nous cherchons à définir les structures basique avec lesquelles nous travaillons, les bdd et les robdd.
 
 \begin{center}
 \emph{“A Boolean function is a function in mathematics and logic whose arguments, as well as the function itself, assume values from a two-element set (usually \{0,1\}).”} 
@@ -114,9 +114,9 @@ Dans cette section nous cherchons à définir les structures basique avec lesque
 - Wikipedia 
 \vspace{5mm} %5mm vertical space
 
-Il existe de nombreux moyens pour représenter des fonctions booléenne. Ceux préférés en science de l'informatique sont les diagrammes, pas seulement grâce à la manière dont ces diagrammes peuvent être réduit, mais aussi parce qu'ils peuvent être conservés en mémoire en tant que multiple noeuds qui ne sont pas forcement adjacent en mémoire les uns aux autres. Ceci rend leur conservation plus simple et efficace.
+Il existe de nombreux moyens pour représenter des fonctions booléennes. Ceux préférés en science de l'informatique sont les diagrammes, pas seulement grâce à la manière dont ces diagrammes peuvent être réduit, mais aussi parce qu'ils peuvent être conservés en mémoire en tant que multiple noeuds qui ne sont pas forcement adjacent en mémoire les uns aux autres. Ceci rend leur conservation plus simple et efficace.
 
-Un bdd est composé de noeuds ayant un label. Chaque noeud non terminal possède deux enfants, ou fils, un bas et un haut liés à leurs parents par des liens notés respectivement 0 et 1. Chaque noeud a un indexe qui détermine son ordre dans le bdd. Les noeuds sont traités dans l'ordre décroissants de leurs indexes.
+Un bdd est composé de noeuds ayant un label. Chaque noeud non terminal possède deux enfants, ou fils, un bas et un haut liés à leurs parents par des liens notés respectivement 0 et 1. Chaque noeud a un index qui détermine son ordre dans le bdd. Les noeuds sont traités dans l'ordre décroissants de leurs indexes.
 
 La manière dont nous ordonnons les noeuds est importante comme noté dans \cite{newton} et trouver l'ordre le plus efficace est un problème NP (non-polynomial). Nous savons que plus un bdd a de variable plus sa taille tend à se rapprocher de celles du robdd qui lui correspond.
 
@@ -124,7 +124,7 @@ La chose importante ici est que les bdd vu en pratique ont tendance à avoir au 
 
 La racine a un index k qui est l'index maximal de la bdd (ou robdd), et les noeuds terminaux ont des index nuls. Tous les noeuds internes (quand ils existent) ont des indexes allant de k à 0, non inclus. Pour un bdd l'index de la racine est le nombre de variables de la fonction booléenne qu'il représente, pas forcement pour un robdd.
 
-Pour exécuter un bdd nous allons tout d'abord à la racine, puis nous suivons un chemin en se fiant à la valeur de chaque variable données en entrée selon l'indexe du noeud courant. Si la variable d'indexe du noeud courant est 0 nous nous rendons à l'enfant bas du noeud courant, l'enfant haut si la variable a pour valeur 1. Nous finissons par arriver à un noeud terminal, que dans le reste de ce papier nous appellerons feuille, de valeur \(\top\) (true) ou \(\bot\) (false) qui est la valeur de retour de la bdd pour les variables considérées.
+Pour exécuter un bdd nous allons tout d'abord à la racine, puis nous suivons un chemin en se fiant à la valeur de chaque variable données en entrée selon l'index du noeud courant. Si la variable d'index du noeud courant est 0 nous nous rendons à l'enfant bas du noeud courant, l'enfant haut si la variable a pour valeur 1. Nous finissons par arriver à un noeud terminal, que dans le reste de ce papier nous appellerons feuille, de valeur \(\top\) (true) ou \(\bot\) (false) qui est la valeur de retour de la bdd pour les variables considérées.
 
 Pour le bdd de la figure 1 si l'on donnait les variables 101 en tant qu'entrées elle retournerait \(\top\) (true). 
 \newpage
@@ -142,11 +142,12 @@ Considérons \(\Delta\) un dag représentant une fonction booléenne f. Considé
 Nous appliquons récursivement ses deux règles à tous les noeuds de \(\Delta\) .
 \vspace{5mm} %5mm vertical space
 
-Deux ordres de parcours peuvent être considérés, \(post_{ordre}\) et \(pre_{ordre}\).
-Dans le \(post_{ordre}\) nous visitons tous d'abord l'enfant bas du noeud courant, puis son enfant haut et enfin le noeud lui-même.
-Dans le \(pre_{ordre}\) nous visitons tous d'abord le neoud courant, puis son enfant bas, et enfin son enfant haut.
+Deux ordres de parcours peuvent être considérés, \(post_{o}\) et \(pre_{o}\).
 
-Nous choisissons ici de considérer l'ordre de traversé \(post_{ordre}\) pour effectuer chacune de nos compressions, puisque c'est celui préféré en science de l'informatique. Choisir un ordre en particulier est important pour s'assurer que des bdd équivalents soient compressés en tant que robdd identique une fois l'ordre des variables établie.
+Dans le \(post_{o}\) nous visitons tous d'abord le fils bas du noeud courant, puis son fils haut et enfin le noeud lui-même.
+Dans le \(pre_{o}\) nous visitons tous d'abord le neoud courant, puis son fils bas, et enfin son fils haut.
+
+Nous choisissons ici de considérer l'ordre de traversé \(post_{o}\) pour effectuer chacune de nos compressions, puisque c'est celui préféré en science de l'informatique. Choisir un ordre en particulier est important pour s'assurer que des bdd équivalents soient compressés en tant que robdd identique une fois l'ordre des variables établie.
 \vspace{5mm} %5mm vertical space
 
 Nous pouvons désormais définir formellement le processus de compression.
@@ -158,24 +159,38 @@ Voir Appendix \ref{Appendix_1} pour l'algorithme de compression.
 
 Définissons maintenant formellement un robdd.
 
-Considérons un robdd \(\Delta\) = (Q, I, r, \(\delta\)). Q est l'ensemble de noeuds que l'on obtient par une traversé en \(post_{ordre}\) de \(\Delta\). r est la racine de \(\Delta\), I est la fonction qui associe pour tout noeud \(\lambda\) \(\in\) Q son indexe et \(\delta\) est la fonction de transition complète qui associe à chaque noeuds ses fils.
+Considérons un robdd \(\Delta\) = (Q, I, r, \(\delta\)). Q est l'ensemble de noeuds que l'on obtient par une traversé en \(post_{o}\) de \(\Delta\). r est la racine de \(\Delta\), I est la fonction qui associe pour tout noeud \(\lambda\) \(\in\) Q son index et \(\delta\) est la fonction de transition complète qui associe à chaque noeuds ses fils.
 \begin{itemize}
     \item
     	Q  =   ([feuille1],[feuille2], …, r)
-    	([feuille1] etant la premiere feuille que l'on rencontre lorsque l'on parcourt \(\Delta\) en \(post_{ordre}\) et [feuille2] la seconde)
+    	([feuille1] etant la premiere feuille que l'on rencontre lorsque l'on parcourt \(\Delta\) en \(post_{o}\) et [feuille2] la seconde)
     \item 
-        \(I = Q   \rightarrow  \{0, \ldots , k\}\) où k est l'indexe de r
+        \(I = Q   \rightarrow  \{0, \ldots , k\}\) où k est l'index de r
     \item 
        \( \delta = (Q \setminus  \{\top,  \bot\}) * \{0, 1\} \rightarrow \) Q
 \end{itemize}
 
+On note que Q a une taille forcement superieur ou egal à 3.
+
+On peut ainsi representer le dag de la figure 1 par un robdd \(\Delta\) = (Q, I, r, \(\delta\)) ayant les propriétés suivantes:
+\begin{itemize}
+    \item
+    	Q  =   \((\bot, \top, x1,x2,x3)\)
+    \item 
+        \(I = \{\bot, \top, x1,x2,x3\}   \rightarrow  \{0,0,1,2,3\}\)
+    \item 
+       \( \delta = \{ x1 * 0 \rightarrow \bot , x1 * 1 \rightarrow \top, x2 * 0 \rightarrow x1, x2 * 1 \rightarrow \top, x3 * 0 \rightarrow \bot, x3 * 1 \rightarrow x2 \} \) Q
+    \item 
+        r = x3
+\end{itemize}
+
 Dans le reste de ce papier nous utiliserons le terme bdd pour faire référence aux robdd.
-\newpage
+
 \section{(RO)BDD : propriétés}
-Dans cette section nous définissons des propriété que l'on assigne aux bdd. Pour ce faire nous mettant en place un ensemble de notation et d'opérations. Toute les notations utilisés dans cette section seront utilisés dans le reste de ce rapport. Les opérations que nous définissons pour les liste sont également applicables aux ensembles.
+Dans cette section nous définissons des propriété que l'on assigne aux bdd. Pour ce faire nous mettant en place un ensemble de notation et d'opérations. Toute les notations utilisés dans cette section seront utilisés dans le reste de ce rapport. Les opérations que nous définissons pour les listes sont également applicables aux ensembles.
 \vspace{5mm} %5mm vertical space
 
-Pour deux noeuds \(\alpha\) et \(\beta\) d'un dag \(\Phi\) nous écrivons \(\alpha\) \(\Leftarrow_{post}\) \(\beta\) si le neoud \(\alpha\) est visité avant le noeud \(\beta\) en \(post_{ordre}\) lors de la traversé de \(\Phi\), et \(\alpha\)\(\Leftarrow_{pre}\) \(\beta\) si le noeud \(\alpha\) est visité avant le noeud \(\beta\) en \(pre_{ordre}\) lors de la traversé de \(\Phi\).
+Pour deux noeuds \(\alpha\) et \(\beta\) d'un dag \(\Phi\) nous écrivons \(\alpha\) \(\Leftarrow_{post}\) \(\beta\) si le neoud \(\alpha\) est visité avant le noeud \(\beta\) en \(post_{o}\) lors de la traversé de \(\Phi\), et \(\alpha\)\(\Leftarrow_{pre}\) \(\beta\) si le noeud \(\alpha\) est visité avant le noeud \(\beta\) en \(pre_{o}\) lors de la traversé de \(\Phi\).
 \vspace{5mm} %5mm vertical space
 
 Pour deux listes l et l’ de tailles respectives m et n, où l = (p0,p1…,pm) et l’ = (p’0,p’1,…,p’n) nous écrivons L=l+l’ l'opération telle que si m\(<\)n avec L=(P0,P1,…,Pn) alors nous avons pour \(i\leq\) m Pi=pi+p’i et pour \(m<i\leq n\) Pi=p’i.
@@ -183,18 +198,17 @@ Pour deux listes l et l’ de tailles respectives m et n, où l = (p0,p1…,pm) 
 Pour une liste l nous notons \(\mid l\mid \) le nombre d'élément dans l, et \(\mid\mid l\mid\mid\) la somme de tous ses éléments.
 \vspace{5mm} %5mm vertical space
 
-\textbf{Profil d'un ensemble}: Le profile P=profile(S) d'un ensemble S est simplement une liste du nombre d'élément de S ayant un certain indexe, on note P = (p0,p1…,pj,…pk) où pj est le nombre d'elements dans l'ensemble S d'index j et k l'index maximal de S. 
+\textbf{Profil d'un ensemble}: Le profil P=profil(S) d'un ensemble S est simplement une liste du nombre d'élément de S ayant un certain index, on note P = (p0,p1…,pj,…pk) où pj est le nombre d'elements dans l'ensemble S d'index j et k l'index maximal de S. 
 
-Le processus d'extension de cette définition de profile à des graphes est évident.
+Le processus d'extension de cette définition de profil à des graphes est évident.
 \vspace{5mm} %5mm vertical space
 
-\textbf{Spine d'un bdd} : Considérons un bdd \(\Delta\) = (Q, I, r, \(\delta\)) enraciné en r. Le spine T = (Q’, I, r, \(\delta\)’) de \(\Delta\) est un dag tel que Q’ = Q / \{\(\top,\bot\)\} où chaque noeud \(\lambda\) \(\in\) Q’ a été obtenu par la traversée en \(post_{ordre}\) de \(\Delta\) en faisant omission des deux feuilles. Les liens du spine sont décrit en utilisant une fonction de transition partielle \(\delta\)’: Q’ \(\times\) \{0, 1\} \(\rightarrow\) Q' \(\cup\) \{nil\} où nil est un symbole spécial désignant une transition non définie.
+\textbf{Spine d'un bdd} : Considérons un bdd \(\Delta\) = (Q, I, r, \(\delta\)) enraciné en r. Le spine T = (Q’, I, r, \(\delta\)’) de \(\Delta\) est un dag tel que Q’ = Q / \{\(\top,\bot\)\} où chaque noeud \(\lambda\) \(\in\) Q’ a été obtenu par la traversée en \(post_{o}\) de \(\Delta\) en faisant omission des deux feuilles. Les liens du spine sont décrit en utilisant une fonction de transition partielle \(\delta\)’: Q’ \(\times\) \{0, 1\} \(\rightarrow\) Q' \(\cup\) \{nil\} où nil est un symbole spécial désignant une transition non définie.
 
 Décrit simplement un spine est un bdd auquel on retire les deux feuilles et les pointeurs.
 
 Dans le reste de ce papier nous nous référerons aux valeurs non définis de la fonction de transition partielle en tant que nil transition.
 
-\newpage
 Nous notons n le nombre de noeud d'un dag \(\Delta\) d'un bdd, nous savons que son spine S a le même nombre de noeud que \(\Delta\) à l'exception des deux feuilles. Nous pouvons ainsi noter que S a (n-2) noeuds. Nous savons également que tous les noeuds non terminaux de \(\Delta\) ont deux enfants, ainsi le nombre de transition dans \(\Delta\) est (n-2)*2, ce qui est le nombre total de transition dans S (a la fois les transition nil et non nil). Nous savons également que chaque noeud \(\lambda\) \(\in\) S a nécessairement un degré entrant de 1 à l'exception de la racine ainsi le nombre restant de transition non nil dans S est (n-3). Nous pouvons maintenant conclure que S a un nombre de nil transition égal à (n-1).
 \vspace{5mm} %5mm vertical space
 
@@ -206,7 +220,7 @@ Nous notons n le nombre de noeud d'un dag \(\Delta\) d'un bdd, nous savons que s
 PT(\(\lambda\)) = \{\(\tau\)’ \(\in\) D \(\mid\)  \(\tau\)’ \(\Leftarrow_{pre}\) \(\lambda\) et I(\(\tau\)’) \(<\) I(\(\lambda\))\} \(\cup\) \{\(\top\), \(\bot\)\} .
 \end{center}
 
-\textbf{Pool profile} : Le pool profile de \(\lambda\) est comme son nom l'indique le profile de sa pool que l'on note: profile(PT(\(\lambda\))). 
+\textbf{Pool profil} : Le pool profil de \(\lambda\) est comme son nom l'indique le profil de sa pool que l'on note: profil(PT(\(\lambda\))). 
 
 \textbf{Level set} : Considérons un dag D, le level set \(\lambda\) \(\in\) D est:
 \begin{center}
@@ -214,13 +228,24 @@ ST(\(\lambda\)) = \{\(\theta\)’ \(\in\) D \(\mid\) \(\theta\)’ \(\Leftarrow_
 \end{center}
 \textbf{Level rank} : Considérons ST(\(\lambda\)) le level set du noeud \(\lambda\), nous écrivons RS(\(\lambda\)) son sibling rank tel que:
 \[ RS(\lambda) = \mid ST(\lambda)\mid \]
+\newpage
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=11cm, height=12cm]{tree21}
+    \caption{Dag}
+    \label{fig:Figure2}
+\end{figure}
+On considère dans la figure 3 un dag. Les pointeurs sont représentés en rouge. Le spine du robdd de ce dag est le graphe réduit aux transitions en noirs.
 
-Voir Appendix \ref{Appendix_2} pour des exemples de certaines propriétés vu dans cette section.
+La pool du noeud entouré en vert est : \(\{x_2,x_2,x_1,x_1,\top,\bot\}\). 
+
+Le profil de ce dag est : \{2,2,4,2,1\}.
+
 \vspace{5mm} %5mm vertical space
 
 Nous savons de la manière dont nous définissons les bdd que pour être valide un bdd \(\Beta\) doit avoir les propriétés suivantes:
 
-FACT 1.1 : \emph{De la règle r nous faisons la conclusion que deux noeuds de même indexe ne peuvent avoir les même descendants, autrement ils auraient été fusionnés.}
+FACT 1.1 : \emph{De la règle r nous faisons la conclusion que deux noeuds de même index ne peuvent avoir les même descendants, autrement ils auraient été fusionnés.}
 
 FACT 1.2 : \emph{A partir de la règle m nous savons qu'un noeud ne peut avoir deux enfants identiques, autrement ce noeud aurait été supprimé.}
 
@@ -237,7 +262,7 @@ La méthode classique permettant d'énumérer les bdd ayant un nombre de variabl
 	\item
 	Supprimer les bdd réapparaissant plus d'une fois afin de ne conserver qu'une seule de leurs récurrence
 \end{enumerate}
-Nous proposons ici une méthode récursive permettant d'effectuer cette énumération sans passer par le processus de compression.
+Nous proposons ici une méthode récursive permettant d'effectuer cette énumération sans passer par le processus de compression ni de filtration. Ces deux processus sont hautement coûteux avec une complexité doublement exponentielle \(O(2^{2^{k}})\).
 \vspace{5mm} %5mm vertical space
 
 \textbf{Proposition 1} :  Considérons T = (Q’, I, r, \(\delta\)’) un spine avec un ensemble de noeuds Q’, racine r et fonction de transition partiel \(\delta\)’ : Q’ \(\times\) \{0, 1\} \(\rightarrow\) Q’ \(\cup\) \{nil\}. La fonction de transition entière \(\delta\) : Q’ \(\times\) \{0, 1\} \(\rightarrow\) Q’ \(\cup\) \{\(\top\), \(\bot\)\} est la fonction de transition d'un bdd avec un spine T si et seulement si pour tout noeuds \(\lambda\) \(\in\) Q’, noté \(\lambda\)0 = \(\delta\)(\(\lambda\), 0) et \(\lambda\)1 = \(\delta\)(\(\lambda\), 1), la paire (\(\lambda\)0, \(\lambda\)1) satisfait : 
@@ -263,11 +288,12 @@ Nous proposons ici une méthode récursive permettant d'effectuer cette énumér
 	\(\lambda\)0 = \(\delta\)’(\(\lambda\), 0) et \(\lambda\)1 \(\in\) PT(\(\lambda\)) \(\cup\) TA(\(\lambda\)0) \(\setminus\) \(\lambda\)0 .
     \end{center}
 \end{enumerate}
-Preuve. Puisque \(\delta\)(·, ·) doit étendre \(\delta\)’(·, ·), le cas 1. est triviale puisque nous devons étendre la fonction de transition uniquement où l'on a \(\delta\)(\(\lambda\), \(\sigma\)) = nil. Dans le cas 2., nous devons choisir pour (\(\lambda\)0, \(\lambda\)1) deux noeuds dans PT(\(\lambda\)). De plus \(\lambda\)0 != \(\lambda\)1 comme déclaré dans FACT 1.2 et un autre noeud avec le même indexe que \(\lambda\) ne peut pas avoir les même enfants (\(\lambda\)0, \(\lambda\)1) comme déclaré dans FACT 1.1. Dans le cas 3., l'enfant bas doit être choisie dans la pool de \(\lambda\) puisque l'on doit préserver le spine. Dans le cas 4., l'enfant haut de \(\lambda\) est aussi choisi dans la pool de  \(\lambda\) ou dans TA(\(\lambda\)0) (et doit être diffèrent de \(\lambda\)0).
+\newpage
+Preuve. Puisque \(\delta\)(·, ·) doit étendre \(\delta\)’(·, ·), le cas 1. est triviale puisque nous devons étendre la fonction de transition uniquement où l'on a \(\delta\)(\(\lambda\), \(\sigma\)) = nil. Dans le cas 2., nous devons choisir pour (\(\lambda\)0, \(\lambda\)1) deux noeuds dans PT(\(\lambda\)). De plus \(\lambda\)0 != \(\lambda\)1 comme déclaré dans FACT 1.2 et un autre noeud avec le même index que \(\lambda\) ne peut pas avoir les même enfants (\(\lambda\)0, \(\lambda\)1) comme déclaré dans FACT 1.1. Dans le cas 3., l'enfant bas doit être choisie dans la pool de \(\lambda\) puisque l'on doit préserver le spine. Dans le cas 4., l'enfant haut de \(\lambda\) est aussi choisi dans la pool de  \(\lambda\) ou dans TA(\(\lambda\)0) (et doit être diffèrent de \(\lambda\)0).
+\vspace{5mm} %5mm vertical space
 
 Nous définissons maintenant un procédé permettant de calculer le nombre de bdd correspondant à un spine donné, nous appellerons le nombre de bdd correspondant à un spine S le poids de S.
 
-\newpage
 \textbf{Poids d'un noeud} : Considérons un spine T = (Q’, I, \(\delta\)’, r), le poids wT(\(\lambda\)) d'un noeud \(\lambda\) \(\in\) Q’ est le nombre de transition possible pour compléter la fonction de transition partielle \(\delta\)’(\(\lambda\), ·) et former un bdd valide de spine T.
 
 \textbf{Proposition 2} (Poids d'un noeud) : Considérons T = (Q’, I, \(\delta\)’, r) un spine , le poids wt(\(\lambda\)) d'un noeud \(\lambda\) \(\in\) T est:
@@ -282,7 +308,7 @@ Nous définissons maintenant un procédé permettant de calculer le nombre de bd
     \end{cases}       
 \end{equation}
 
-Avec pts(\(\lambda\)) = \(\mid\mid profile(PT(\lambda)) \mid\mid\) et pts0 = \(\mid\mid profile(TA(\delta \textquoteright(\lambda,0))) \mid\mid\).
+Avec pts(\(\lambda\)) = \(\mid\mid profil(PT(\lambda)) \mid\mid\) et pts0 = \(\mid\mid profil(TA(\delta \textquoteright(\lambda,0))) \mid\mid\).
 
 Preuve. A partir de la proposition 1 nous énumérons tous les liens possibles (liant à un noeud) nous pouvons utiliser pour compléter la fonction de transition partielle. Dans le premier cas nous ne pouvons compléter que avec les liens déjà existant (comme déclaré dans 1) de proposition 1) le cas est déjà définie). Dans le second cas nous énumérons tous les liens possible de 2) de la proposition 1. Dans le troisième et quatrième cas nous faisons la même chose pour respectivement  3) et 4).
 \vspace{5mm} %5mm vertical space
@@ -293,16 +319,16 @@ Le poids d'un sous arbre est le poids cumulé de ses noeuds.
 \[W(T) = \prod wt(\lambda) \mid \lambda \in Q\textquoteright\]
 
 
-Dans le cas où le poids d'un noeud \(\lambda \in Q\textquoteright\) est nul ou négative nous savons que le spine T est invalide parce que T n'est pas le spine du moindre bdd. Ceci arrive uniquement lorsque \(\lambda\) a ses deux enfants égaux à nil (puisque l'on a nécessairement \(\mid\mid profile(PT(\lambda)) \mid\mid \geq\)2).
+Dans le cas où le poids d'un noeud \(\lambda \in Q\textquoteright\) est nul ou négative nous savons que le spine T est invalide parce que T n'est pas le spine du moindre bdd. Ceci arrive uniquement lorsque \(\lambda\) a ses deux enfants égaux à nil (puisque l'on a nécessairement \(\mid\mid profil(PT(\lambda)) \mid\mid \geq\)2).
 
-Cette formule peut être aisément décrite de manière récursive, via une traversée en \(post_{ordre}\) où toutes les informations nécessaires pour calculer le poids du noeud ont déjà été traités.
+Cette formule peut être aisément décrite de manière récursive, via une traversée en \(post_{o}\) où toutes les informations nécessaires pour calculer le poids du noeud ont déjà été traités.
 \vspace{5mm} %5mm vertical space
 
 Nous notons \(T_{nk}\) l'ensemble des spine de taille n et de nombre de variable k, et \(N_{nk}\) le nombre de bdd de taille n et de nombre de variable k.
 Pour déterminer \(N_{nk}\) tout ce que nous avons à faire est déterminer la totalité des spine de taille n et de nombre de nombre de variable k et ensuite déterminer leurs poids, nous faisons ensuite l'addition de leurs poids.
 
 \[N_{nk} = \sum W(T) \mid T \in T_{nk}\]
-\newpage
+
 \section{Combinatoire sur les spine}
 Ce que nous voulions dans la section précédente était d'énumérer tout les bdd de taille n et de nombre de variable k. Pour ce faire nous devons déterminer les spine de taille n et de nombre de variable k. Ceci n'est un processus aisé à informatiser.
 
@@ -311,19 +337,19 @@ Nous définissons ici un processus récursive où nous construisons les spine pa
 
 Nous définissons un spine Tt en tant que tuple tel que:
 \[Tt = T\textquoteright \cup N_i \cup T\textquoteright\textquoteright \mid nil \]
-où \(N_i\) est un noeud d'indexe i, ceci signifie que le spine est soit reduit à nil soit à une racine et deux spine. Nous designerons dans la suite les spine T' et T'' qui composent Tt par le terme de sous spine.
+où \(N_i\) est un noeud d'index i, ceci signifie que le spine est soit reduit à nil soit à une racine et deux spine. Nous designerons dans la suite les spine T' et T'' qui composent Tt par le terme de sous spine.
 
 Pour considerer un spine enraciné en r en particulier nous prendrons en compte trois de ses paramètres. Sa pool pT(T), le level rank de sa racine ST(r) et sa taille que nous designerons par \(\mid\mid T\mid\mid\).
 
 Ces paramètre sont important parce qu'ils sont ce dont on a besoin pour déterminer le poids des spine que nous considérons.
 
-Nous utiliserons la notation \(T_{m,p,s} \) pour considérer le spine enraciné en r de taille m (m =  \(\mid\mid T\mid\mid\)), de pool profile p (p = profile(pT(r))) et de level rank s (s = ST(r)) représenté par un tuple Tt tel décrit plus haut.
+Nous utiliserons la notation \(T_{m,p,s} \) pour considérer le spine enraciné en r de taille m (m =  \(\mid\mid T\mid\mid\)), de pool profil p (p = profil(pT(r))) et de level rank s (s = ST(r)) représenté par un tuple Tt tel décrit plus haut.
 
 
+\textbf{Proposition 3} :  Pour \(T_{m,p,s} \) nous considérons des tailles pour chaque sous spine T’ \(\cup\) T’’ \(\in\) T de respectivement i et m – 1 – i, avec \(0\leq i\leq m-1\). Pour chacune des tailles de sous spine considérés nous considérons chacune des valeurs d'index que l'on peut assigner à leurs racines.
+
+Nous avons ainsi un algorithme où nous considérons toute les tailles possible ainsi que les indexes des sous-spines, le level rank de la racine étant déjà donné par le pool profil du spine courant (ainsi que par le profil de T' dans le cas du level rank de T''). k correspond dans la suite à la taille de p.
 \newpage
-\textbf{Proposition 3} :  Pour \(T_{m,p,s} \) nous considérons des tailles pour chaque sous spine T’ \(\cup\) T’’ \(\in\) T de respectivement i et m – 1 – i, avec \(0\leq i\leq m-1\). Pour chacune des tailles de sous spine considérés nous considérons chacune des valeurs d'indexe que l'on peut assigner à leurs racines.
-
-Nous avons ainsi un algorithme où nous considérons toute les tailles possible ainsi que les indexes des sous-spines, le level rank de la racine étant déjà donné par le pool profile du spine courant (ainsi que par le profile de T' dans le cas du level rank de T''). k correspond dans la suite à la taille de p.
 \begin{enumerate}
     \item Si m>0
         \begin{enumerate}
@@ -343,11 +369,30 @@ Nous avons ainsi un algorithme où nous considérons toute les tailles possible 
             W(T)=1
         \end{enumerate}
 \end{enumerate}
-Avec j = m-1-i, on note p[:i]=(\(p_0,p_1...p_i\)) pour designer dans un ensemble p que l'on ne considere que les elements ayant un indexe plus petit ou egale à i et \(p_{k}\) lorsqu'on designe l'element d'indexe k. On a egalement p1=p+profile(TA(T')) et K = \{0,1,...,k\}. Enfin on note W(T) le poids du spine T et WTP(N,T',T'') le poids du noeud N qui a pour fils bas le spine T' et pour fils haut le spine T''.
+Avec j = m-1-i, on note p[:i]=(\(p_0,p_1...p_i\)) pour designer dans un ensemble p que l'on ne considere que les elements ayant un index plus petit ou egale à i et \(p_{k}\) lorsqu'on designe l'element d'index k. On a egalement p1=p+profil(TA(T')) et K = \{0,1,...,k\}. Enfin on note W(T) le poids du spine T et WTP(N,T',T'') le poids du noeud N qui a pour fils bas le spine T' et pour fils haut le spine T''.
 \vspace{5mm} %5mm vertical space
 
 Avec algorithme nous ne considérons pour chaque récursion que les spine de même valeurs m, p et s. 
-En s'inspirant de ce procédé on peut écrire un algorithme COUNT(m,p,s) prenant en argument une taille de spine m, un profile p et un level rank s et retournant un dictionnaire où chaque clé est le profile d'un spine et la valeur la somme des poids des spine ayant ce profile. 
+En s'inspirant de ce procédé on peut écrire un algorithme COUNT(m,p,s) prenant en argument une taille de spine m, un profil p et un level rank s et retournant un dictionnaire où chaque clé est le profil d'un spine et la valeur la somme des poids des spine ayant ce profil. 
+
+Quelques exemples d'execution de la fonction COUNT:
+\begin{itemize}
+    \item COUNT(3,(2,0,0),0) nous retourne \{(0,1,1,1): 56, (0,2,0,1): 2, (0,0,2,1): 2\}
+    \item COUNT(2,(2,0),0) nous retourne  \{(0,1,1): 8\}
+    \item COUNT(1,(2),1) nous retourne \{(0,1): 1\}
+    \item COUNT(1,(2),0) nous retourne \{(0,1): 2\}
+\end{itemize}
+
+Dans le premier cas le dictionnaire retourné nous indique qu'il existe 56 spine unique de taille 3 ayant pour profil (0,1,1,1), 2 ayant pour profil (0,2,0,1) et encore 2 ayant pour profil (0,0,2,1).
+
+\vspace{5mm} %5mm vertical space
+
+S'appuyant sur l'algorithme COUNT on definit N(n,k) qui renvoie le nombre de bdd de taille n et d'index k:
+\[N(n,k)=\underset{(t,w)\in COUNT(n-2,(2,0,...,0),0)}{\sum} w\]
+
+\(e^{(k)}\) est une liste de k+1 composants tous nul sauf le dernier qui est egal à 1 tel que \(e^{(k)} = (0,0,...,1)\).
+
+La complexité de l'algorithme COUNT est exponentionel de l'ordre de \(O(2^{3k^2/2+k})\).
 
 On decrit l'algorithme COUNT en pseudo code ci-dessous.
 \begin{algorithm}
@@ -394,28 +439,6 @@ On decrit l'algorithme COUNT en pseudo code ci-dessous.
   \end{algorithmic}
 \end{algorithm}
 \newpage
-
-\(e^{(k)}\) est une liste de k+1 composants tous nul sauf le dernier qui est egal à 1 tel que \(e^{(k)} = (0,0,...,1)\).
-
-La complexité de l'algorithme COUNT est exponentionel de l'ordre de \(O(2^{3k^2/2+k})\).
-
-Quelques exemples d'execution de la fonction COUNT:
-\begin{itemize}
-    \item COUNT(3,(2,0,0),0) nous retourne \{(0,1,1,1): 56, (0,2,0,1): 2, (0,0,2,1): 2\}
-    \item COUNT(2,(2,0),0) nous retourne  \{(0,1,1): 8\}
-    \item COUNT(1,(2),1) nous retourne \{(0,1): 1\}
-    \item COUNT(1,(2),0) nous retourne \{(0,1): 2\}
-\end{itemize}
-
-Dans le premier cas le dictionnaire retourné nous indique qu'il existe 56 spine unique de taille 3 ayant pour profil (0,1,1,1), 2 ayant pour profil (0,2,0,1) et encore 2 ayant pour profil (0,0,2,1).
-
-\vspace{5mm} %5mm vertical space
-
-S'appuyant sur l'algorithme COUNT on definit N(n,k) qui renvoie le nombre de bdd de taille n et d'indexe k:
-\[N(n,k)=\underset{(t,w)\in COUNT(n-2,(2,0,...,0),0)}{\sum} w\]
-
-
-\newpage
 \section{Unranking}
 Notre approche pour le unranking s'appuie sur la méthode introduite dans \cite{wilf} où l'on decompose un arbre binaire en ses sous arbre gauche et droits et en attribuant à chaque décomposition un ordre total pour un bdd de taille et d'index fixé.
 
@@ -429,7 +452,7 @@ En s'inspirant de la Proposition 3 on definie une methode recursif b permettant 
     \end{cases}      
 \end{equation}
 
-En s'appuyant sur cette methode on peut definir une decomposition sur un arbre de taille fixé n, cette methode s'apuie sur le fait que \(b_n\) est definie en une somme de produit, où chaque element de ce produit peut être vu comme la representation d'un arbre dont ayant un sous arbre gauche et un sous arbre droit de taille fixe. Par exemple \(B_7\) = 429, et on peut le decomposer en:
+En s'appuyant sur cette methode on peut definir une decomposition sur un arbre de taille fixé n, cette methode s'apuie sur le fait que \(b_n\) est definie en une somme de produit, où chaque element du produit peut être vu comme la representation d'un arbre dont ayant un sous arbre gauche et un sous arbre droit de taille fixe. Par exemple \(B_7\) = 429, et on peut le decomposer en:
 \[B_7=B_0*B_6+B_1*B_5+B_2*B_4+B_3*B_3+B_4*B_2+B_5*B_1+B_6*B_0\]
 \[429=1*132+1*42+2*14+5*5+14*2+42*1+132*1\]
 
@@ -437,7 +460,7 @@ Où \(B_2*B_4\) represente un arbre composé d'un sous arbre droit de taille 4 e
 
 [citation]
 
-Ainsi, si je cherche l'arbre n°250, j'obtiens : 250 = 132 + 42 + 28 + 25 + 23. On trouve donc que l'arbre 250 est composé
+Ainsi, si je cherche l'arbre n\°250, j'obtiens : 250 = 132 + 42 + 28 + 25 + 23. On trouve donc que l'arbre 250 est composé
 d'un enfant gauche de taille 4 et d'un enfant droit de taille 2. Et plus particulièrement, parmi les 28 arbres ayant cette
 décomposition 4x2, c'est l'arbre numéro 23 qui nous intéresse.
 
@@ -457,7 +480,7 @@ En s'inspirant de cette methode on definie une methode DECOMPOSE(r\textquoterigh
         \Function{decompose}{$rank, n, spine, p$}
             \State \Let{$p\_target \gets $list$(p)$} 
             \State \Let{$r \gets rank$}
-            \State \Let{$s \gets spine.$get\_profile$()$}
+            \State \Let{$s \gets spine.$get\_profil$()$}
             \State \Let{$k \gets $len$(p\_target)-1$}
             \State \Let{$q \gets s[:k]$}
             \State \Let{$q[0] \gets 2$}
@@ -469,10 +492,10 @@ En s'inspirant de cette methode on definie une methode DECOMPOSE(r\textquoterigh
                     \State \Let{$d0 \gets \{\}$}
                     \For{$k0 \gets $range$(1,k)$}
                         \State \Let{$d0.$update$($count$(i,q[:k0],q[k0]))$}
-                    \ENDFOR
+                    \EndFor
                 \EndIf
                 \For{$(l,w0)$ in $d0.$items$()$}
-                    \State \Let{$q\_prim \gets $sum\_profile$(q,l) $}
+                    \State \Let{$q\_prim \gets $sum\_profil$(q,l) $}
                     \If{$n-1-i = 0$}
                         \State \Let{$d1 \gets \{():$sum$(q\_prim,1,k-1)+1\}$}
                     \Else
@@ -482,7 +505,7 @@ En s'inspirant de cette methode on definie une methode DECOMPOSE(r\textquoterigh
                         \EndFor
                     \EndIf
                     \For{$(h,w1) in d1.items()$}
-                        \State \Let{$t \gets sum\_profile(sum\_profile(e\_k(k),list(l)),list(h))$}
+                        \State \Let{$t \gets sum\_profil(sum\_profil(e\_k(k),list(l)),list(h))$}
                         \State \Let{$w \gets w0*w1$}
                         \If{$t = p\_target$}
                             \If{$w > 0$}
@@ -537,7 +560,7 @@ Pour cela on utilise ces fonctions:
     \item unrank\_pair(rank, k) : Cette fonction retourne une pair de noeud dont l'index est strictement inferieur à k, on omet egalement les pair de noeuds deja assignés en tant que descendant d'un noeud precedent de même index.
     
 %    \item  get\_rank(i) : Cette fonction retourne le noeud de rang i compatible avec le noeud courant.
-%    \item get\_profile() : Cette fonction retourne retourne le profile du spine courant.
+%    \item get\_profil() : Cette fonction retourne retourne le profil du spine courant.
 % On a pas l'air d'utiliser ces deux la???
     \item add\_node(lo, hi, k): Cette fonction crée le noeud d'index k et ayant pour descendants bas et haut lo et hi.
 \end{itemize}
@@ -623,20 +646,6 @@ On peut faire remarquer que cette algorithme a une complexité polynomial O(n) o
 
 
 \newpage
-\subsection{Appendix 2}
-\label{Appendix_2}
-\begin{figure}[htp]
-    \centering
-    \includegraphics[width=12cm, height=13cm]{tree21}
-    \caption{Dag d'une robdd}
-    \label{fig:Figure2}
-\end{figure}
-On considère dans la figure 2 le dag d'un robdd. Les pointeurs sont représentés en rouge. Le spine de ce robdd est le graphe réduit aux transitions en noirs.
-
-La pool du noeud entouré en vert est : \(\{x_2,x_2,x_1,x_1,\top,\bot\}\). 
-
-Le profile de ce robdd est : \{(2,2,4,2,1)\}.
-
 \subsection{Appendix 4}
 \label{Appendix_4}
 [donner pseudo code unranking et precomputation]
