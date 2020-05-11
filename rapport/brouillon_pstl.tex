@@ -11,7 +11,7 @@
 \usepackage{biblatex}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-
+\usepackage{siunitx}
 \addbibresource{biblio.bib} 
 
 
@@ -208,6 +208,7 @@ Le processus d'extension de cette définition de profil à des graphes est évid
 Décrit simplement un spine est un bdd auquel on retire les deux feuilles et les pointeurs.
 
 Dans le reste de ce papier nous nous référerons aux valeurs non définis de la fonction de transition partielle en tant que nil transition.
+\vspace{5mm} %5mm vertical space
 
 Nous notons n le nombre de noeud d'un dag \(\Delta\) d'un bdd, nous savons que son spine S a le même nombre de noeud que \(\Delta\) à l'exception des deux feuilles. Nous pouvons ainsi noter que S a (n-2) noeuds. Nous savons également que tous les noeuds non terminaux de \(\Delta\) ont deux enfants, ainsi le nombre de transition dans \(\Delta\) est (n-2)*2, ce qui est le nombre total de transition dans S (a la fois les transition nil et non nil). Nous savons également que chaque noeud \(\lambda\) \(\in\) S a nécessairement un degré entrant de 1 à l'exception de la racine ainsi le nombre restant de transition non nil dans S est (n-3). Nous pouvons maintenant conclure que S a un nombre de nil transition égal à (n-1).
 \vspace{5mm} %5mm vertical space
@@ -254,15 +255,15 @@ FACT 1.2 : \emph{A partir de la règle m nous savons qu'un noeud ne peut avoir d
 La méthode classique permettant d'énumérer les bdd ayant un nombre de variable k et une taille n est la suivante:
 \begin{enumerate}
     \item 
-	Énumérer toute les \({2^2}^k\) fonctions booléennes et dresser leurs diagrammes binaire
+	Énumérer toute les \({2^2}^k\) fonctions booléennes et dresser leurs arbres de décision binaires
 	\item
 	Appliquer le processus de compressions pour obtenir leurs bdd
 	\item
     Filtrer les bdd de taille n
 	\item
-	Supprimer les bdd réapparaissant plus d'une fois afin de ne conserver qu'une seule de leurs récurrence
+	Supprimer les bdd réapparaissant plus d'une fois afin de ne conserver qu'une seule de leurs occurrence
 \end{enumerate}
-Nous proposons ici une méthode récursive permettant d'effectuer cette énumération sans passer par le processus de compression ni de filtration. Ces deux processus sont hautement coûteux avec une complexité doublement exponentielle \(O(2^{2^{k}})\).
+Nous proposons ici une méthode récursive permettant d'effectuer cette énumération sans passer ni par le processus de compression ni celui de filtration. Ces deux processus sont hautement coûteux avec une complexité doublement exponentielle \(O(2^{2^{k}})\).
 \vspace{5mm} %5mm vertical space
 
 \textbf{Proposition 1} :  Considérons T = (Q’, I, r, \(\delta\)’) un spine avec un ensemble de noeuds Q’, racine r et fonction de transition partiel \(\delta\)’ : Q’ \(\times\) \{0, 1\} \(\rightarrow\) Q’ \(\cup\) \{nil\}. La fonction de transition entière \(\delta\) : Q’ \(\times\) \{0, 1\} \(\rightarrow\) Q’ \(\cup\) \{\(\top\), \(\bot\)\} est la fonction de transition d'un bdd avec un spine T si et seulement si pour tout noeuds \(\lambda\) \(\in\) Q’, noté \(\lambda\)0 = \(\delta\)(\(\lambda\), 0) et \(\lambda\)1 = \(\delta\)(\(\lambda\), 1), la paire (\(\lambda\)0, \(\lambda\)1) satisfait : 
@@ -452,19 +453,16 @@ En s'inspirant de la Proposition 3 on definie une methode recursif b permettant 
     \end{cases}      
 \end{equation}
 
-En s'appuyant sur cette methode on peut definir une decomposition sur un arbre de taille fixé n, cette methode s'apuie sur le fait que \(b_n\) est definie en une somme de produit, où chaque element du produit peut être vu comme la representation d'un arbre dont ayant un sous arbre gauche et un sous arbre droit de taille fixe. Par exemple \(B_7\) = 429, et on peut le decomposer en:
+En s'appuyant sur cette methode on peut definir une decomposition sur un arbre de taille fixé n. Cette methode s'apuie sur le fait que \(b_n\) est definie en une somme de produit, où chaque element du produit peut être vu comme la representation d'un arbre ayant un sous arbre gauche et un sous arbre droit de taille fixe. Par exemple \(B_7\) = 429, et on peut le decomposer en:
 \[B_7=B_0*B_6+B_1*B_5+B_2*B_4+B_3*B_3+B_4*B_2+B_5*B_1+B_6*B_0\]
 \[429=1*132+1*42+2*14+5*5+14*2+42*1+132*1\]
 
 Où \(B_2*B_4\) represente un arbre composé d'un sous arbre droit de taille 4 et d'un sous arbre gauche de taille 2.
 
-[citation]
-
-Ainsi, si je cherche l'arbre n\°250, j'obtiens : 250 = 132 + 42 + 28 + 25 + 23. On trouve donc que l'arbre 250 est composé
+Ainsi, si je cherche l'arbre n\si{\degree}250, j'obtiens : 250 = 132 + 42 + 28 + 25 + 23. On trouve donc que l'arbre 250 est composé
 d'un enfant gauche de taille 4 et d'un enfant droit de taille 2. Et plus particulièrement, parmi les 28 arbres ayant cette
 décomposition 4x2, c'est l'arbre numéro 23 qui nous intéresse.
 
-[citation]
 
 Pour ensuite retrouver le numero des sous arbre gauche et droit on procede comme ceci:
 \begin{itemize}
@@ -472,7 +470,7 @@ Pour ensuite retrouver le numero des sous arbre gauche et droit on procede comme
     \item 23 \% \(B_2\)   pour le numero du sous arbre droit
 \end{itemize}
 
-En s'inspirant de cette methode on definie une methode DECOMPOSE(r\textquoteright,n\textquoteright,s,p\textquoteright) permettant de generer un bdd de taille n\textquoteright, ayant un profil p\textquoteright et un rang r\textquoteright. s est une variable contenant le spine du bdd a generer.
+En s'inspirant de cette methode on definie une fonction DECOMPOSE(r\textquoteright,n\textquoteright,s,p\textquoteright) permettant de generer un bdd de taille n\textquoteright, ayant un profil p\textquoteright et un rang r\textquoteright. s est une variable contenant le spine du bdd a generer.
 
 \begin{algorithm}
   \begin{algorithmic}[1]
@@ -525,8 +523,8 @@ En s'inspirant de cette methode on definie une methode DECOMPOSE(r\textquoterigh
 \end{algorithm}
 \newpage
 
-On decrit ensuite un algorithme GENERATE(r,n,s,p) permettant de generer un spine de taille n, de profil p et de rang r. La variable s est une variable globale qui contiendra en fin d'execution le bdd generé.
-Cet algorithme prend en argument un spine s contenant les noeuds initialement dans la pool (ici \(\up\) et \(\bot\)) et crée au fur et a mesure le bdd souhaité en faisant appel a la fonction decompose et en mettant a jour le spine.
+On decrit ensuite une fonction GENERATE(r,n,s,p) permettant de generer un spine de taille n, de profil p et de rang r. La variable s est une variable globale qui contiendra en fin d'execution le bdd generé.
+Cette fonction prend en argument un spine s contenant les noeuds initialement dans la pool (ici \(\up\) et \(\bot\)) et crée au fur et a mesure le bdd souhaité en faisant appel à la fonction decompose et en mettant à jour le spine.
 
 \begin{algorithm}
   \begin{algorithmic}[1]
@@ -540,9 +538,9 @@ Cet algorithme prend en argument un spine s contenant les noeuds initialement da
             \If{$n = 1$}
                 \State \Let{$lo,hi \gets spine.$unrank\_pair$(rank,k)$}
             \Else
-                \State \Let{$i,r0,l,r1,h \gets $decompose$(rank,n,spine,p\_target)$}
-                \State \Let{$lo \gets $generate$(r0,i,spine,l)$}
-                \State \Let{$hi \gets $generate$(r1, n-1-i, spine, h)$}
+                \State \Let{$i,r0,l,r1,h \gets $DECOMPOSE$(rank,n,spine,p\_target)$}
+                \State \Let{$lo \gets $GENERATE$(r0,i,spine,l)$}
+                \State \Let{$hi \gets $GENERATE$(r1, n-1-i, spine, h)$}
             \EndIf
             \State \Let{$node \gets spine.$add\_node$(rank,k,lo,hi)$}
             \State \Return{$node$}
@@ -550,9 +548,9 @@ Cet algorithme prend en argument un spine s contenant les noeuds initialement da
 \end{algorithm}
 
 
-Dans la fonction generate on fait en sorte d'identifier les noeuds que l'on peut assigner aux nil-transitions du noeud courant. Pour un noeud v ayant deux nil-trnasitions on verifie donc avant de lui assigner en tant que haut fils un noeud n et fils bas un noeud m que I(m)<I(v) et I(n)<I(v), on verifie egalement qu'il n'existe pas v\textquoteright \(\in\) spine tel que v!=v\textquoteright, où v\textquoteright a pour fils bas m\textquoteright et pour fils haut n\textquoteright, que m=m\textquoteright et n=n\textquoteright.
+Dans la fonction GENERATE on fait en sorte d'identifier les noeuds que l'on peut assigner aux nil-transitions du noeud courant. Pour un noeud v ayant deux nil-trnasitions on vérifie donc avant de lui assigner en tant que haut fils un noeud n et fils bas un noeud m que I(m)<I(v) et I(n)<I(v), on vérifie également qu'il n'existe pas v\textquoteright \(\in\) spine tel que v!=v\textquoteright, où v\textquoteright a pour fils bas m\textquoteright et pour fils haut n\textquoteright, que m=m\textquoteright et n=n\textquoteright.
 
-On fait ensuite de même lorsque le noeud courant a une seul nil-transitions en tant que fils bas ou en tant que fils haut tout en respectant les regle que l'on a deja decrit pour la generation des bdd. 
+On fait ensuite de même lorsque le noeud courant a une seul nil-transitions en tant que fils bas ou en tant que fils haut tout en respectant les règles que l'on a déjà décrit pour la génération des bdd. 
 
 Pour cela on utilise ces fonctions:
 \begin{itemize}
@@ -567,7 +565,7 @@ Pour cela on utilise ces fonctions:
 
 \newpage
 
-Enfin on decrit un algorithme GEN\_BDD(r,n,k) permettant de generer un bdd de taille n, d'index k et de rang r en utilisant la fonction generate decrite precedemment.
+Enfin on decrit une fonction GEN\_BDD(r,n,k) permettant de générer un bdd de taille n, d'index k et de rang r en utilisant la fonction GENERATE décrite précédemment.
 
 \begin{algorithm}
   \begin{algorithmic}[1]
@@ -588,9 +586,9 @@ Enfin on decrit un algorithme GEN\_BDD(r,n,k) permettant de generer un bdd de ta
   \end{algorithmic}
 \end{algorithm}
 
-Spine est ici une classe d'objet permettant de representer un spine.
+Spine est ici une classe d'objet permettant de représenter un spine.
 
-La methode du unranking nous permet de mettre au point un generateur aleatoire uniforme de bdd.
+La méthode du unranking nous permet de mettre au point un generateur aleatoire uniforme de bdd.
 
 \newpage
 \section{Quickcheck}
