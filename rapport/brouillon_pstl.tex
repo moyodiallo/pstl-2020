@@ -601,9 +601,7 @@ En tant que conclusion nous notons que les méthodes introduites dans ce papier 
 \section{Appendix}
 \subsection{Appendix 1}
 \label{Appendix_1}
-
 On présente ici l'algorithme de compression en pseudo code
-
 \begin{algorithm}
   \begin{algorithmic}[1]
     \Require{\hfill\newline Le noeud initial est celui de la racine de l'arbre à compresser\newline
@@ -615,7 +613,7 @@ On présente ici l'algorithme de compression en pseudo code
         \If{Label(n)=False}             \Comment{Label(n): Renvoie le label de n}
             \State \Return{0}
         \Else
-            \State \Return{1}
+            \\Return{1}
         \EndIf
       \Else
         \State \Let{$lo \gets $ Left(n)}         \Comment{Left(n): Renvoie le sous arbre gauche de n}
@@ -623,7 +621,7 @@ On présente ici l'algorithme de compression en pseudo code
         \State \Let{$lo \gets $ Compression($lo$)} 
         \State \Let{$hi \gets $ Compression($hi$)}  
         \If{$lo=hi$}
-            \State \Return{$lo$}
+            \Return{$lo$}
         \Else
             \State \Let{$triple \gets ($INDEX(n)$,lo,hi)$}   \Comment{Index(n): Renvoie l'index de n}
             \State \Let{$value\_found \gets $FIND$(triple,table)$} 
@@ -634,20 +632,12 @@ On présente ici l'algorithme de compression en pseudo code
                 \State \Let{$count \gets count + 1$} 
                 \State \Return{$uid$}
             \Else
-                \State \Return{$value\_found$}
+                \Return{$value\_found$}
             \EndIf\EndIf\EndIf\EndFunction
   \end{algorithmic}
 \end{algorithm}
 
 On peut faire remarquer que cette algorithme a une complexité polynomial O(n) où n est le nombre de noeud de l'arbre a compresser.
-
-
-
-\newpage
-
-\subsection{Appendix 2}
-\label{Appendix_2}
-[donner graphique temps methode classique, la notre]
 
 \newpage
 \printbibliography
