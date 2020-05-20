@@ -15,9 +15,9 @@
 \addbibresource{biblio.bib} 
 
 
-\title{brouillon-pstl-bdd.v4}
+\title{brouillon-pstl-bdd.v6}
 \author{Alpha DIALLO, Lamine KEITA, Sacha MEMMI}
-\date{Avril 2020}
+\date{Mai 2020}
 
 
 
@@ -536,11 +536,18 @@ Cette fonction prend en argument un spine s contenant les noeuds initialement da
                 \State \Return{$ node$}
             \EndIf
             \If{$n = 1$}
-                \State \Let{$lo,hi \gets spine.$unrank\_pair$(rank,k)$}
+                \Let{$lo,hi \gets spine.$unrank\_pair$(rank,k)$}
             \Else
                 \State \Let{$i,r0,l,r1,h \gets $DECOMPOSE$(rank,n,spine,p\_target)$}
                 \State \Let{$lo \gets $GENERATE$(r0,i,spine,l)$}
-                \State \Let{$hi \gets $GENERATE$(r1, n-1-i, spine, h)$}
+                \If{$n-1-i=0$}
+                    \Let{$hi.$unrank\_singleton$(r1)$}
+                        \If{$hi=lo$}
+                            \Let{$hi \gets $GENERATE$(r1-1, n-1-i, spine, h)$}
+                        \EndIf
+                    \Else
+                        \State \Let{$hi \gets $GENERATE$(r1, n-1-i, spine, h)$}
+                \EndIf
             \EndIf
             \State \Let{$node \gets spine.$add\_node$(rank,k,lo,hi)$}
             \State \Return{$node$}
