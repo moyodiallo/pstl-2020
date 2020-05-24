@@ -118,7 +118,7 @@ Il existe de nombreux moyens pour représenter des fonctions booléennes. Ceux p
 
 Un bdd est composé de noeuds ayant un label. Chaque noeud non terminal possède deux enfants, ou fils, un bas et un haut liés à leurs parents par des liens notés respectivement 0 et 1. Chaque noeud a un index qui détermine son ordre dans le bdd. Les noeuds sont traités dans l'ordre décroissants de leurs indexes.
 
-La manière dont nous ordonnons les noeuds est importante comme noté dans \cite{newton} et trouver l'ordre le plus efficace est un problème NP (non-polynomial). Nous savons que plus un bdd a de variable plus sa taille tend à se rapprocher de celles du robdd qui lui correspond.
+La manière dont nous ordonnons les noeuds est importante comme noté dans \cite{newton} et trouver l'ordre le plus efficace est un problème NP (nondeterministic polynomial time). Nous savons que plus un bdd a de variable plus sa taille tend à se rapprocher de celles du robdd qui lui correspond.
 
 La chose importante ici est que les bdd vu en pratique ont tendance à avoir au moins un ordonnancement efficace de leurs noeuds où la taille de leurs robdd est bien inférieur à la leurs \cite{gropl}. Raison pour laquelle déterminer l'ordre le plus efficace est aussi important.
 
@@ -414,7 +414,7 @@ On decrit l'algorithme COUNT en pseudo code ci-dessous.
                 \State \Let{$d_0 \gets \{():\sum_{k-1}^{i=0} p_i\}$}
             \Else
                 \For{$k_0 \gets$ 1 to $k-1$}
-                    \State \Let{$d_0 \gets d_0 \cup COUNT(i,p[:k_0-1],p_{k_0})$}
+                    \State \Let{$d_0 \gets d_0 \cup $COUNT$(i,p[:k_0-1],p_{k_0})$}
                 \EndFor
             \EndIf
             \For{$(l,w_0) \gets d_0$}
@@ -424,7 +424,7 @@ On decrit l'algorithme COUNT en pseudo code ci-dessous.
                     \State \Let{$d_1 \gets \{():-1+\sum_{k-1}^{i=0} p_i\textquoteright\}$}
                 \Else
                     \For{$k_1 \gets 1$ to $k-1$}
-                        \State \Let{$d_1 \gets d_1 \cup COUNT(n-1-i,p'[:k_1-1],p'_{k_1})$}
+                        \State \Let{$d_1 \gets d_1 \cup $COUNT$(n-1-i,p'[:k_1-1],p'_{k_1})$}
                     \EndFor
                 \EndIf
                 \For{$(r,w_1) \gets d_1$}
@@ -502,8 +502,8 @@ En s'inspirant de cette methode on definie une fonction DECOMPOSE(r\textquoterig
                         \State \Let{$d1.$update$($count$(n$-$1$-$i,q\_prim[:k1],q\_prim[k1]))$}
                         \EndFor
                     \EndIf
-                    \For{$(h,w1) in d1.items()$}
-                        \State \Let{$t \gets sum\_profil(sum\_profil(e\_k(k),list(l)),list(h))$}
+                    \For{$(h,w1)$ in$ d1.$items$()$}
+                        \State \Let{$t \gets $sum\_profil$($sum\_profil$($e\_k$(k),$list$(l)),$list$(h))$}
                         \State \Let{$w \gets w0*w1$}
                         \If{$t = p\_target$}
                             \If{$w > 0$}
@@ -602,8 +602,12 @@ La méthode du unranking nous permet de mettre au point un generateur aleatoire 
 [décrire quick test et resultats]
 \newpage
 \section{Conclusion}
-En tant que conclusion nous notons que les méthodes introduites dans ce papier peuvent être étendues à d'autre types de bdd tel que les zbdd (zero-suppressed decision diagram), ou encore d'autre types d'arbre binaire ne traitant pas de fonctions booléennes. Nous aimerions également faire remarquer que nous pourrions tenter de simplifier l'algorithme de comptage en le rendant plus efficace, ou en faisant en sorte de ne considérer que les spine valide, nous considérons la complexité en temps comme bien plus importante que celle en espace mémoire.
-[A COMPLETER!!!!]
+Il ne fait aucun doute que la methode presenté dans ce rapport offre un gain en temps et en espace gigantesque pour la resolution du probleme presenté, la generation de bdd. Nous avons vu que même avec un materiel limité nous pouvions generer un grand nombre de bdd en un temps records, ce qui n'etait pas possible avec la methode standard. 
+
+Cette generation en plus de sa simplicité presente d'autre gain tel que la possibilité de l'adapter selon nos besoins. Nous pouvons ainsi l'adapter pour pouvoir generer d'autre types d'arbre de decisions ainsi que pourquoi pas d'arbre. 
+Mais comme nous l'avons vu ce gain ne se limite pas a la seule generaiton de bdd, cette methode nous offre une toute nouvelle comprehension et moyen d'étude de ces structures que l'on nomme bdd.
+
+On note également que l'on pourrait encore améliorer notre méthode, par exemple en faisant en sorte de ne considérer que les bdd valides, ou en améliorant le processus de comptage. 
 \newpage
 \section{Appendix}
 \subsection{Appendix 1}
