@@ -53,17 +53,17 @@ Puis en plus de rappeler la méthode standard de génération des robdd, nous do
 
 
 \section{Introduction}
-L'idée derrière les diagrammes de décision binaires a été introduite par Shannon en 1938 dans \cite{shannon}. Les diagrammes de fonction binaires sont principalement des outils pour les ingénieurs (et autre professions travaillant dans le hardware en informatique) qui manipulent des circuit électroniques, cas où l'utilisation de tables de vérité se révèle efficace. Dans ce cas là diviser leurs circuits complexes en sous circuits simple comme le permettent les diagrammes de décision binaires (concept que l'on appelle "diviser pour régner") est très efficace. 
+L'idée derrière les diagrammes de décision binaires a été introduite par Shannon en 1938 dans \cite{shannon}. Les diagrammes de fonction binaires sont principalement des outils pour les ingénieurs (et autre professions travaillant dans le hardware en informatique) qui manipulent des circuit électroniques, cas où l'utilisation de tables de vérité se révèle efficace. Dans ce cas là diviser leurs circuits complexes en sous circuits simple comme le permettent les diagrammes de décision binaires (concept que l'on appelle "diviser pour régner") est très efficace.\medskip
 
-Plus particulièrement les circuits électroniques sont devenus si compliqués que les robdd sont à peine suffisant pour les traiter comme l'a noté Knuth il y a de ça plus de 10 ans \cite{knuth}.
+Plus particulièrement les circuits électroniques sont devenus si compliqués que les robdd sont à peine suffisant pour les traiter comme l'a noté Knuth il y a de ça plus de 10 ans \cite{knuth}.\medskip
 
-Les fonctions booléennes ont de très nombreux usages, dans \cite{cahier} P. Camion convertie de nombreux problemes du domaine des entiers en problèmes équivalent en algèbre booléenne et dans ce même papier R. Fortet a introduit l'idée de colorer un graphe selon 4 couleurs (theoreme des quatres couleurs \cite{dirac}) en assignant deux variables booléenne à chaque vertex.
+Les fonctions booléennes ont de très nombreux usages, dans \cite{cahier} P. Camion convertie de nombreux problemes du domaine des entiers en problèmes équivalent en algèbre booléenne et dans ce même papier R. Fortet a introduit l'idée de colorer un graphe selon 4 couleurs (theoreme des quatres couleurs \cite{dirac}) en assignant deux variables booléenne à chaque vertex.\medskip
 
-Un bdd (binary decision diagram) est un diagramme de décision binaire pouvant représenter une fonction booléenne, l'utilité des bdd ne se limite a représenter des fonctions booléenne mais dans ce papier nous nous limiterons à celle ci. Un robdd (reduced ordered binary decision diagram) est comme son nom l'indique la forme réduite et ordonné d'un bdd. Dans la literrature le terme bdd est presque toujours utilisé pour évoquer un robdd, nous différencierons tout d'abord entre ces deux termes pour mettre l'accent sur l'aspect réduction. Les bdd que nous considerons dans ce papier sont toujours ordonné, quand on parle de bdd nous faisons en fait référence à un obdd  (ordered binary decision diagrams).
+Un bdd (binary decision diagram) est un diagramme de décision binaire pouvant représenter une fonction booléenne, l'utilité des bdd ne se limite a représenter des fonctions booléenne mais dans ce papier nous nous limiterons à celle ci. Un robdd (reduced ordered binary decision diagram) est comme son nom l'indique la forme réduite et ordonné d'un bdd. Dans la literrature le terme bdd est presque toujours utilisé pour évoquer un robdd, nous différencierons tout d'abord entre ces deux termes pour mettre l'accent sur l'aspect réduction. Les bdd que nous considerons dans ce papier sont toujours ordonné, quand on parle de bdd nous faisons en fait référence à un obdd  (ordered binary decision diagrams).\medskip
 
-Les robdd n'ont été introduit qu'en 1986 \cite{bryant_graph}. Assez tard dans l'histoire de l'informatique. Les robdd ont été une telle révolution que \cite{bryant_graph} est pendant des années resté le papier le plus cité dans la littérature scientifique, et de nombreuses autres variantes de robdd ont été crées depuis \cite{wegner}.
+Les robdd n'ont été introduit qu'en 1986 \cite{bryant_graph}. Assez tard dans l'histoire de l'informatique. Les robdd ont été une telle révolution que \cite{bryant_graph} est pendant des années resté le papier le plus cité dans la littérature scientifique, et de nombreuses autres variantes de robdd ont été crées depuis \cite{wegner}.\medskip
 
-Le principe d'un robdd est simple, on cherche à conserver de l'espace mémoire en se débarrassant des structures redondantes, la mémoire étant une préoccupation importante en informatique. Pour réduire un bdd, nous supprimons les sous structures redondantes, nous supprimons également les noeuds non essentiels. Nous représentons les bdd en tant qu'arbre plat et les robdd en tant que dag (directed acyclic diagrams) \cite{flajolet_automata}. Plus généralement les robdd sont des sous types de bdd et tous les types de bdd peuvent être représentés par un dag.
+Le principe d'un robdd est simple, on cherche à conserver de l'espace mémoire en se débarrassant des structures redondantes, la mémoire étant une préoccupation importante en informatique. Pour réduire un bdd, nous supprimons les sous structures redondantes, nous supprimons également les noeuds non essentiels. Nous représentons les bdd en tant qu'arbre plat et les robdd en tant que dag (directed acyclic diagrams) \cite{flajolet_automata}. Plus généralement les robdd sont des sous types de bdd et tous les types de bdd peuvent être représentés par un dag.\medskip
 
 \begin{figure}[htp]
     \centering
@@ -73,21 +73,21 @@ Le principe d'un robdd est simple, on cherche à conserver de l'espace mémoire 
     \label{fig:Figure1.1}
 \end{figure}
 \newpage
-Un exemple d'arbre de décision binaire et un dag représentant sa forme réduite sont donné dans la figure 1. Nous suivons ici le consensus dans la littérature et représentons les liens vers les fils haut par une ligne solide, et ceux vers les fils bas par une ligne en pointillé.
+Un exemple d'arbre de décision binaire et un dag représentant sa forme réduite sont donné dans la figure 1. Nous suivons ici le consensus dans la littérature et représentons les liens vers les fils haut par une ligne solide, et ceux vers les fils bas par une ligne en pointillé.\medskip
 
-En plus de l'utilité évidente des fonctions booléennes ont peut aussi noter que les bdd sont devenus aussi populaire parce que comme Knuth l'a noté dans \cite{knuth} les bdd simples sont relativement facile à fusionner pour obtenir des bdd plus complexes.
+En plus de l'utilité évidente des fonctions booléennes ont peut aussi noter que les bdd sont devenus aussi populaire parce que comme Knuth l'a noté dans \cite{knuth} les bdd simples sont relativement facile à fusionner pour obtenir des bdd plus complexes.\medskip
 
-Dans ce rapport notre but est de présenter un nouveau procédé permettant d'énumérer des robdd sans passer par le processus de compression.
+Dans ce rapport notre but est de présenter un nouveau procédé permettant d'énumérer des robdd sans passer par le processus de compression.\medskip
 
-Le processus de compression est relativement simple avec une complexité P (polynomial), mais la méthode standard de génération des bdd d'un nombre donné de variable k utilisé jusqu'ici était impraticable pour {\(k > 4\)} \cite{newton}. Pour construire les bdd ayant k variable dans la méthode standard nous construisons tout d'abord toutes les fonctions booléennes ayant k variables, puis leurs bdd, puis compressons ces bdd afin d'obtenir leurs robdd et enfin nous supprimons les robdd apparaissant plus d'une fois. Ceci avait une complexité doublement exponentielle de  O(\( {2^2}^k\) ).
+Le processus de compression est relativement simple avec une complexité P (polynomial), mais la méthode standard de génération des bdd d'un nombre donné de variable k utilisé jusqu'ici était impraticable pour {\(k > 4\)} \cite{newton}. Pour construire les bdd ayant k variable dans la méthode standard nous construisons tout d'abord toutes les fonctions booléennes ayant k variables, puis leurs bdd, puis compressons ces bdd afin d'obtenir leurs robdd et enfin nous supprimons les robdd apparaissant plus d'une fois. Ceci avait une complexité doublement exponentielle de  O(\( {2^2}^k\) ).\medskip
 
 Nous définissons la taille d'un robdd par le nombre de noeuds internes (non terminaux) qu'il contient.
 \newpage
 Pour énumérer ces structures dans la méthode que nous introduisons ici nous utilisons de nombreuses propriétés des robdd.  Nous utilisons ensuite des méthodes dites de unranking et ranking basées sur le modèle standard introduit dans \cite{wilf} en définissant un ordre total sur les robdd et en décomposant chacun par une constitution de sous robdd.
 
-Le processus de ranking consiste à attribuer à chaque objet d'un ensemble un identifiant unique, celui du unranking correspond au processus inverse, retrouver depuis son identifiant un objet au sein d'un ensemble.
+Le processus de ranking consiste à attribuer à chaque objet d'un ensemble un identifiant unique, celui du unranking correspond au processus inverse, retrouver depuis son identifiant un objet au sein d'un ensemble.\medskip
 
-Nous obtenons grâce à cette méthode un générateur uniforme de robdd.
+Nous obtenons grâce à cette méthode un générateur uniforme de robdd.\medskip
 
 Avec la méthode standard introduite dans \cite{newton} les robdd de taille proche de la taille maximal étaient crées avec une grande probabilité, mais dans celle ci chaque robdd a un identifiant unique dans l'ensemble. On peut également modifier ce générateur pour ne créer que des robdd ayant certaine classes de propriétés.
 
@@ -98,9 +98,9 @@ Avec la méthode standard introduite dans \cite{newton} les robdd de taille proc
     \label{fig:Figure1.2}
 \end{figure}
 
-Avec notre méthode nous arrivons a comptabiliser les bdd ayant 5 variable, avec une implementation en python et un materiel limité, en 14 secondes.
+Avec notre méthode nous arrivons a comptabiliser les bdd ayant 5 variable, avec une implantation en python et un matériel limité, en 14 secondes.\medskip
 
-Nos resultats sont similaire a ce qui etait estimé dans \cite{newton} pour 5 variable (on rapelle qu'ici on ne prend pas en compte les feuille dans le calcul de la taille d'un bdd).
+Nos résultats sont similaire a ce qui était estimé dans \cite{newton} pour 5 variable (on rappelle qu'ici on ne prend pas en compte les feuille dans le calcul de la taille d'un bdd).\medskip
 
 Dans ce rapport nous considérerons que nous ne rencontrons jamais le robdd réduit au noeud unique \(\top\) ou \(\bot.\)
 \newpage
@@ -349,7 +349,7 @@ Nous utiliserons la notation \(T_{m,p,s} \) pour considérer le spine enraciné 
 
 \textbf{Proposition 3} :  Pour \(T_{m,p,s} \) nous considérons des tailles pour chaque sous spine T’ \(\cup\) T’’ \(\in\) T de respectivement i et m – 1 – i, avec \(0\leq i\leq m-1\). Pour chacune des tailles de sous spine considérés nous considérons chacune des valeurs d'index que l'on peut assigner à leurs racines.
 
-Nous avons ainsi un algorithme où nous considérons toute les tailles possible ainsi que les indexes des sous-spines, le level rank de la racine étant déjà donné par le pool profil du spine courant (ainsi que par le profil de T' dans le cas du level rank de T''). k correspond dans la suite à la taille de p.
+Nous avons ainsi un algorithme où nous considérons toute les tailles possible ainsi que les indexes des sous-spine, le level rank de la racine étant déjà donné par le pool profil du spine courant (ainsi que par le profil de T' dans le cas du level rank de T''). k correspond dans la suite à la taille de p.
 \newpage
 \begin{enumerate}
     \item Si m>0
@@ -595,10 +595,63 @@ Enfin on decrit une fonction GEN\_BDD(r,n,k) permettant de générer un bdd de t
 
 Spine est ici une classe d'objet permettant de représenter un spine.
 
-La méthode du unranking nous permet de mettre au point un generateur aleatoire uniforme de bdd.
+La méthode du unranking nous permet de mettre au point un générateur aléatoire uniforme de bdd.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{arb_3104.png}
+    \caption{Graphe(A) rang(rank) = 3104}
+    \label{fig:graphe_A}
+\end{figure}
+L'ensemble dans lequel on a choisi cet graphe(A) est : {(0, 2, 1, 1, 1): 584, (0, 1, 2, 1, 1): 1256, (0, 2, 2, 0, 1): 74, (0, 1, 1, 2, 1): 1112, (0, 2, 0, 2, 1): 74, (0, 0, 2, 2, 1): 74}.
+
+Avec cet rang(3104), on déduit la structure qui est (0, 0, 2, 2, 1). Puisqu'en faisant la somme 584+1256+74+1112+74 = 3100, on remarque qu'on a pas atteint 3104 donc le seule choix reste le dernier.
+
+Et on a exactement la même structure que le graphe génère {x1=0 ; x2=2  ; x3=2; x4 = 1}
 
 \section{Quickcheck}
-[décrire quick test et resultats]
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.3]{generator.png}
+    \caption{Résumé des tests}
+    \label{fig:Concept}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{arb_1577.png}
+    \caption{Graphe(B) rang(rank) = 1577}
+    \label{fig:graphe_B}
+\end{figure}
+
+Dans nos tests, il s'agit d'utiliser une bibliothèque quickcheck pour tester les propriétés de notre générateur.
+Pour cela on due recourir à une stratégie avec la bibliothèque \href{https://hypothesis.works}{Hypothesis} en langage Python.  Pour une première fois nous générons un certains nombres de graphes (G) à partir d'une suites de rang uniformément généré par \href{https://hypothesis.works}{Hypothesis}. Pour chaque couple (A,B) de l'ensemble G, nous produisons leur combinaison C puis nous générons la table de vérité de chacun des trois (Etape 1). Enfin nous testons la formule de l'étape 2.\medskip
+
+La fonction melding, combine deux BDD(graphes). Le résultat est graphe qui  une conjonction des deux BDD combinés. on peut voir 
+cela avec le graphe(C) qui la combinaison avec le graphe A et le graphe B.
+
+Avec cette méthode nous avons validé qu'une partie, il faut savoir que d'autre type d'autres types de tests
+sont possibles. Comme par exemples des tests comparatifs avec d'autres bibliothèques.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{abr_melding_C.png}
+    \caption{Graphe(C) combinaison de A et B}
+    \label{fig:graphe_B}
+\end{figure}
+
+Pour l'exemple de ces trois graphes on peut observer les tables de verités pour une validation avec ces choix de rangs. sur la figure en dessous(figure 8).
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{and_ABC.png}
+    \caption{A et B <=> C}
+    \label{fig:and_abc}
+\end{figure}
+
+\newpage
+
 \section{Conclusion}
 Il ne fait aucun doute que la methode presenté dans ce rapport offre un gain en temps et en espace gigantesque pour la resolution du probleme presenté, la generation de bdd. Nous avons vu que même avec un materiel limité nous pouvions generer un grand nombre de bdd en un temps records, ce qui n'etait pas possible avec la methode standard. 
 
