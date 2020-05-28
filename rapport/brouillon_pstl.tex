@@ -571,7 +571,6 @@ Pour cela on utilise ces fonctions:
 \end{itemize}
 
 \newpage
-
 Enfin on decrit une fonction GEN\_BDD(r,n,k) permettant de générer un bdd de taille n, d'index k et de rang r en utilisant la fonction GENERATE décrite précédemment.
 
 \begin{algorithm}
@@ -583,7 +582,7 @@ Enfin on decrit une fonction GEN\_BDD(r,n,k) permettant de générer un bdd de t
             \State \Let{$p    \gets [0]*k$}
             \State \Let{$p[0] \gets 2$}
             \State \Let{$d \gets $count$(n-2,p,0)$}
-            \For{$(t,w) in d.$items$()$}
+            \For{$(t,w)$ in $d.$items$()$}
                 \State \Let{$r \gets r - w$}
                 \If{$r < 0$}:
                     \State \Let{$r \gets r + w$}
@@ -600,14 +599,14 @@ La méthode du unranking nous permet de mettre au point un générateur aléatoi
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.4]{arb_3104.png}
-    \caption{Graphe(A) rang(rank) = 3104}
+    \caption{Graphe(A) rang = 3104}
     \label{fig:graphe_A}
 \end{figure}
-L'ensemble dans lequel on a choisi cet graphe(A) est : {(0, 2, 1, 1, 1): 584, (0, 1, 2, 1, 1): 1256, (0, 2, 2, 0, 1): 74, (0, 1, 1, 2, 1): 1112, (0, 2, 0, 2, 1): 74, (0, 0, 2, 2, 1): 74}.
+L'ensemble dans lequel on a choisi le spine du graphe(A) de la figure 4 est : \{(0, 2, 1, 1, 1): 584, (0, 1, 2, 1, 1): 1256, (0, 2, 2, 0, 1): 74, (0, 1, 1, 2, 1): 1112, (0, 2, 0, 2, 1): 74, (0, 0, 2, 2, 1): 74\}.
 
-Avec cet rang(3104), on déduit la structure qui est (0, 0, 2, 2, 1). Puisqu'en faisant la somme 584+1256+74+1112+74 = 3100, on remarque qu'on a pas atteint 3104 donc le seule choix reste le dernier.
+Avec un rang=3104, on déduit le profile du spine du graphe qui est (0, 0, 2, 2, 1). Puisqu'en faisant la somme 584+1256+74+1112+74 = 3100, on remarque qu'on a pas atteint 3104 donc le seule choix reste le dernier.
 
-Et on a exactement la même structure que le graphe génère {x1=0 ; x2=2  ; x3=2; x4 = 1}
+Avec un rang=3104 et le profile de spine généré on se retrouve avec {x1=0 ; x2=2  ; x3=2; x4 = 1} et le graphe de la figure 4.
 
 \section{Quickcheck}
 
@@ -626,13 +625,11 @@ Et on a exactement la même structure que le graphe génère {x1=0 ; x2=2  ; x3=
 \end{figure}
 
 Dans nos tests, il s'agit d'utiliser une bibliothèque quickcheck pour tester les propriétés de notre générateur.
-Pour cela on due recourir à une stratégie avec la bibliothèque \href{https://hypothesis.works}{Hypothesis} en langage Python.  Pour une première fois nous générons un certains nombres de graphes (G) à partir d'une suites de rang uniformément généré par \href{https://hypothesis.works}{Hypothesis}. Pour chaque couple (A,B) de l'ensemble G, nous produisons leur combinaison C puis nous générons la table de vérité de chacun des trois (Etape 1). Enfin nous testons la formule de l'étape 2.\medskip
+Pour cela on a due recourir à une stratégie avec la bibliothèque \href{https://hypothesis.works}{Hypothesis} en langage Python.  Pour commencer nous générons un certains nombres de graphes (G) à partir d'une suites de rang uniformément généré par \href{https://hypothesis.works}{Hypothesis}. Pour chaque couple (A,B) de l'ensemble G, nous produisons leur combinaison C puis nous générons la table de vérité de chacun des trois (Etape 1). Enfin nous testons la formule de l'étape 2.\medskip
 
-La fonction melding, combine deux BDD(graphes). Le résultat est graphe qui  une conjonction des deux BDD combinés. on peut voir 
-cela avec le graphe(C) qui la combinaison avec le graphe A et le graphe B.
+La fonction melding, combine deux BDD(graphes). Le résultat est un graphe qui une conjonction des deux BDD combinés. on peut voir cela avec le graphe(C) qui la combinaison des graphes A et B.
 
-Avec cette méthode nous avons validé qu'une partie, il faut savoir que d'autre type d'autres types de tests
-sont possibles. Comme par exemples des tests comparatifs avec d'autres bibliothèques.
+Avec cette méthode nous avons validé qu'une partie, il faut savoir que d'autre types de tests sont possibles. Comme par exemples des tests comparatifs avec d'autres bibliothèques.
 
 \begin{figure}[h!]
     \centering
@@ -641,7 +638,7 @@ sont possibles. Comme par exemples des tests comparatifs avec d'autres biblioth�
     \label{fig:graphe_B}
 \end{figure}
 
-Pour l'exemple de ces trois graphes on peut observer les tables de verités pour une validation avec ces choix de rangs. sur la figure en dessous(figure 8).
+Pour l'exemple de ces trois graphes on peut observer les tables de vérités pour une validation avec ces choix de rangs. sur la figure en dessous(figure 8).
 
 \begin{figure}[h!]
     \centering
