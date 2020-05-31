@@ -55,13 +55,13 @@
 
 
 Les fonction booléennes sont très largement utilisées en science. Elles sont aussi largement utilisées parce que simple à manipuler et à mettre en place leur utilité est également très large. On les utilise par exemple en électronique pour travailler avec des circuits logique.
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Les structures avec lesquelles nous travaillons dans ce rapport sont ce que l'on appelle des robdd, reduced ordered binary decision diagram. Elles représentent les fonctions booléennes en tant que graphes (dirigés acycliques). Elles sont l'une des méthode préférée pour représenter les fonctions booléenne en particulier en informatique. Elles sont préférées car facile à implémenter, quelques ligne de codes dans n'importe quel langage sont suffisantes pour les représenter, mais également parce qu'elles sont simple à manipuler.
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 En particulier nous cherchons à énumérer le nombre de robdd unique représentant une fonction ayant un nombre définie de variable selon leurs tailles. Ce problème a intéressé le domaine scientifique depuis que ces structures ont vu le jour, il présente de nombreux intérêts dans tous les domaines où l'on travail avec des robdd.
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Puis en plus de rappeler la méthode standard de génération des robdd, nous donnons un nouveau moyen d'obtenir ces structures. Nous obtenons par cette nouvelle méthode un générateur uniforme de robdd que nous pouvons insérer dans des outils tels que Quickcheck, outil que nous verrons dans ce rapport. Nous utiliserons l'outil Quickcheck sur de petits exemples.
 
@@ -76,7 +76,6 @@ Puis en plus de rappeler la méthode standard de génération des robdd, nous do
  
  La méthode de génération de robdd présenter dans ce rapport s'appuie sur celle présenter dans \cite{genitrini}, en plus d'implémenter des algorithme introduit dans ce papier nous en fournissons certains non décrit dans celui ci [le(s)quel(s?)? Y en a t'il vraimenent? (3) XXX].
 
-\newpage
 
 
 \section{Introduction}
@@ -87,7 +86,7 @@ Les diagrammes de fonction binaires sont principalement des outils pour les ing�
 Plus particulièrement les circuits électroniques sont devenus si compliqués que les robdd sont à peine suffisant pour les traiter comme l'a noté Knuth il y a de ça plus de 10 ans \cite{knuth}. \medskip
 
 Un bdd (binary decision diagram) est un diagramme de décision binaire pouvant représenter une fonction booléenne, l'utilité des bdd ne se limite a représenter des fonctions booléenne mais dans ce rapport nous nous limiterons à celle ci. Par exemple le bdd de la figure 2 peut être utilisé pour représenter la fonction booléenne : \(\Bar{x3}(x2+\Bar{x3})+x3(\Bar{x2}+x1)\) , ainsi que la table de vérité ci dessous:
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 \begin{tabular}{llll}
   \hline
@@ -103,7 +102,7 @@ Un bdd (binary decision diagram) est un diagramme de décision binaire pouvant r
   \top & \top & \top & \top \\
   \hline
 \end{tabular}
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Un robdd (reduced ordered binary decision diagram) est comme son nom l'indique la forme réduite et ordonné d'un bdd. Dans la littérature le terme bdd est presque toujours utilisé pour évoquer un robdd, nous différencierons tout d'abord entre ces deux termes pour mettre l'accent sur l'aspect réduction. Les bdd que nous considérons dans ce rapport sont toujours ordonnés, quand on parle de bdd nous faisons en fait référence à un obdd  (ordered binary decision diagrams).\medskip
 
@@ -122,7 +121,7 @@ Le principe d'un robdd est simple, on cherche à conserver de l'espace mémoire 
 \end{center}
 
 - Wikipedia 
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Il existe de nombreux moyens pour représenter des fonctions booléennes. Ceux préférés en science de l'informatique sont les diagrammes, pas seulement grâce à la manière dont ces diagrammes peuvent être réduit, mais aussi parce qu'ils peuvent être conservés en mémoire en tant que multiple noeuds qui ne sont pas forcement adjacent en mémoire les uns aux autres. Ceci rend leur conservation plus simple et efficace.
 
@@ -143,7 +142,7 @@ Dans ce rapport notre but est de présenter un nouveau procédé permettant d'é
 Le processus de compression est relativement simple avec une complexité polynomiale, mais la méthode standard de génération des bdd d'un nombre donné de variable k utilisé jusqu'ici était impraticable pour {\(k > 4\)} \cite{newton}. Pour construire les bdd ayant k variable dans la méthode standard nous construisons tout d'abord toutes les fonctions booléennes ayant k variables, puis leurs bdd, puis compressons ces bdd afin d'obtenir leurs robdd et enfin nous supprimons les robdd apparaissant plus d'une fois. Ceci avait une complexité doublement exponentielle de  O(\( {2^2}^k\) ).\medskip
 
 Nous définissons la taille d'un robdd par le nombre de noeuds internes (non terminaux) qu'il contient.
-\newpage
+
 Pour énumérer ces structures dans la méthode que nous introduisons ici nous utilisons de nombreuses propriétés des robdd.  Nous utilisons ensuite des méthodes dites de unranking et ranking basées sur le modèle standard introduit dans \cite{wilf} en définissant un ordre total sur les robdd et en décomposant chacun par une constitution de sous robdd.
 
 Le processus de ranking consiste à attribuer à chaque objet d'un ensemble un identifiant unique, celui du unranking correspond au processus inverse, retrouver depuis son identifiant un objet au sein d'un ensemble.\medskip
@@ -154,7 +153,7 @@ Avec la méthode standard utilisée dans \cite{newton} les robdd de taille proch
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=11cm, height=8cm]{index5}
+    \includegraphics[width=10cm, height=7cm]{index5}
     \caption{Distribution des taille de bdd ayant 5 variable}
     \label{fig:Figure1.2}
 \end{figure}
@@ -165,7 +164,7 @@ Nos résultats sont similaires à ce qui était estimé dans \cite{newton} pour 
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=7cm, height=6cm]{screen de newton.png}
+    \includegraphics[width=6cm, height=5cm]{screen de newton.png}
     \caption{Distribution des taille de bdd ayant 5 variable selon \cite{newton}}
     \label{fig:Figure1.2}
 \end{figure}
@@ -184,12 +183,11 @@ La racine a un index k qui est l'index maximal de la bdd (ou robdd), et les noeu
 Un bdd associe a chaque affection de variables une valeur de retour, pour connaître cette valeur nous allons tout d'abord à la racine, puis nous suivons un chemin en se fiant à la valeur de chaque variable données en entrée selon l'index du noeud courant. Si la variable d'index du noeud courant est 0 nous nous rendons à l'enfant bas du noeud courant, l'enfant haut si la variable a pour valeur 1. Nous finissons par arriver à un noeud terminal, que dans le reste de ce rapport nous appellerons feuille, de valeur \(\top\) (true) ou \(\bot\) (false) qui est la valeur de retour de la bdd pour les variables considérées.
 
 Pour le bdd de la figure 2 si l'on donnait les variables 101 en tant qu'entrée elle retournerait \(\top\) (true). 
-\newpage
 
 La méthode classique pour obtenir un robdd est de réduire un arbre de décision binaire. Définissons maintenant comment on effectue cette réduction.
 
 Pour effectuer cette réduction nous suivons tout d'abord deux règles, que nous notons R et M.
-
+\vspace{5mm} 
 Considérons \(\Delta\) un dag représentant une fonction booléenne f. Considérons également \(\alpha\) et \(\beta\)  deux noeuds distincts dans \(\Delta\) .
 
 \textbf{Règle M}: Si \(\alpha\) et \(\beta\) sont des racine de sous graphes isomorphes alors fusionner \(\beta\) et \(\alpha\).
@@ -197,22 +195,22 @@ Considérons \(\Delta\) un dag représentant une fonction booléenne f. Considé
 \textbf{Règle R}: Si les deux fils de \(\beta\) sont isomorphes à \(\alpha\), alors faire pointer tous les liens entrant de \(\beta\) vers \(\alpha\) et supprimer \(\beta\).
 
 Nous appliquons récursivement ses deux règles à tous les noeuds de \(\Delta\) .
-\vspace{5mm} %5mm vertical space
-
+\vspace{5mm} 
+\newpage
 Deux ordres de parcours peuvent être considérés, \(post_{o}\) et \(pre_{o}\).
 
 Dans le \(post_{o}\) nous visitons tous d'abord le fils bas du noeud courant, puis son fils haut et enfin le noeud lui-même.
 Dans le \(pre_{o}\) nous visitons tous d'abord le noeud courant, puis son fils bas, et enfin son fils haut.
 
 Nous choisissons ici de considérer l'ordre de traversé \(post_{o}\) pour effectuer chacune de nos compressions, puisque c'est celui préféré en science de l'informatique. Choisir un ordre en particulier est important pour s'assurer que des bdd équivalents soient compressés en tant que robdd identique une fois l'ordre des variables établie.
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Nous pouvons désormais définir formellement le processus de compression.
 
 \textbf{Compression} :  Considérons \(\Delta\) le bdd de la fonction f.  Quand le noeud \(\lambda\) est visité, \(\lambda\) étant l'enfant d'un noeud \(\mu\). Si un sous-arbre \(\Lambda\), celui qui a pour racine \(\lambda\), a déjà été vu lors de la traversé de \(\Delta\), sous arbre dont la racine est \(\omega\), alors \(\Lambda\) est supprimé de \(\Delta\) et le noeud \(\mu\) obtient un pointeur vers \(\omega\), remplaçant le lien allant précédemment de \(\mu\) à \(\lambda\). Une fois que la traversé de \(\Delta\) achevé, le dag résultant est le robdd de f.
 
 Voir Appendix \ref{Appendix_1} pour l'algorithme de compression.
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Définissons maintenant formellement un robdd, cette définition ainsi que les notations que l'on utilise se basent sur celles définies dans \cite{genitrini}.
 
@@ -242,33 +240,33 @@ On peut ainsi representer le dag de la figure 2 par un robdd \(\Delta\) = (Q, I,
 \end{itemize}
 
 Dans le reste de ce rapport nous utiliserons le terme bdd pour faire référence aux robdd.
-
+\newpage
 \section{(RO)BDD : propriétés}
 Dans cette section nous définissons des propriété que l'on assigne aux bdd. Pour ce faire nous mettant en place un ensemble de notation et d'opérations. Toutes les notations utilisées dans cette section seront utilisées dans le reste de ce rapport. Les opérations que nous définissons pour les listes sont également applicables aux ensembles. On se contente ici de redéfinir les notations définis dans \cite{genitrini}.
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Pour deux noeuds \(\alpha\) et \(\beta\) d'un dag \(\Phi\) nous écrivons \(\alpha\) \(\Leftarrow_{post}\) \(\beta\) si le noeud \(\alpha\) est visité avant le noeud \(\beta\) en \(post_{o}\) lors de la traversé de \(\Phi\), et \(\alpha\)\(\Leftarrow_{pre}\) \(\beta\) si le noeud \(\alpha\) est visité avant le noeud \(\beta\) en \(pre_{o}\) lors de la traversé de \(\Phi\).
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Pour deux listes l et l’ de tailles respectives m et n, où l = (p0,p1…,pm) et l’ = (p’0,p’1,…,p’n) nous écrivons L=l+l’ l'opération telle que si m\(<\)n avec L=(P0,P1,…,Pn) alors nous avons pour \(i\leq\) m Pi=pi+p’i et pour \(m<i\leq n\) Pi=p’i.
 
 Pour une liste l nous notons \(\mid l\mid \) le nombre d'élément dans l, et \(\mid\mid l\mid\mid\) la somme de tous ses éléments.
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 \textbf{Profil d'un ensemble}: Le profil P=profil(S) d'un ensemble S est simplement une liste du nombre d'élément de S ayant un certain index, on note P = (p0,p1…,pj,…pk) où pj est le nombre d'elements dans l'ensemble S d'index j et k l'index maximal de S. 
 
 Le processus d'extension de cette définition de profil à des graphes est évident.
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 \textbf{Squelette d'un bdd} : Considérons un bdd \(\Delta\) = (Q, I, r, \(\delta\)) enraciné en r. Le squelette T = (Q’, I, r, \(\delta\)’) de \(\Delta\) est un dag tel que Q’ = Q / \{\(\top,\bot\)\} où chaque noeud \(\lambda\) \(\in\) Q’ a été obtenu par la traversée en \(post_{o}\) de \(\Delta\) en faisant omission des deux feuilles. Les liens du squelette sont décrit en utilisant une fonction de transition partielle \(\delta\)’: Q’ \(\times\) \{0, 1\} \(\rightarrow\) Q' \(\cup\) \{nil\} où nil est un symbole spécial désignant une transition non définie.
 
 Décrit simplement un squelette est un bdd auquel on retire les deux feuilles et les pointeurs.
 
 Dans le reste de ce rapport nous nous référerons aux valeurs non définis de la fonction de transition partielle en tant que nil transition.
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Nous notons n le nombre de noeud d'un dag \(\Delta\) d'un bdd, nous savons que son squelette S a le même nombre de noeud que \(\Delta\) à l'exception des deux feuilles. Nous pouvons ainsi noter que S a (n-2) noeuds. Nous savons également que tous les noeuds non terminaux de \(\Delta\) ont deux enfants, ainsi le nombre de transition dans \(\Delta\) est (n-2)*2, ce qui est le nombre total de transition dans S (a la fois les transition nil et non nil). Nous savons également que chaque noeud \(\lambda\) \(\in\) S a nécessairement un degré entrant de 1 à l'exception de la racine ainsi le nombre restant de transition non nil dans S est (n-3). Nous pouvons maintenant conclure que S a un nombre de nil transition égal à (n-1).
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 \textbf{Sous arbre} : Un sous arbre TA(\(\lambda\)) est un arbre enraciné en \(\lambda\) appartenant à un autre arbre.
 
@@ -299,7 +297,7 @@ La pool du noeud entouré en vert est : \(\{x_2,x_2,x_1,x_1,\top,\bot\}\).
 
 Le profil de ce bdd est : \{2,2,4,2,1\}.
 
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Nous savons de la manière dont nous définissons les bdd que pour être valide un bdd \(\Beta\) doit avoir les propriétés suivantes:
 
@@ -307,7 +305,6 @@ FACT 1.1 : \emph{De la règle r nous faisons la conclusion que deux noeuds de m�
 
 FACT 1.2 : \emph{A partir de la règle m nous savons qu'un noeud ne peut avoir deux enfants identiques, autrement ce noeud aurait été supprimé.}
 
-\newpage
 \section{Comptage}
 La méthode classique permettant d'énumérer les bdd ayant un nombre de variable k et une taille n est la suivante:
 \begin{enumerate}
@@ -321,7 +318,7 @@ La méthode classique permettant d'énumérer les bdd ayant un nombre de variabl
 	Supprimer les bdd réapparaissant plus d'une fois afin de ne conserver qu'une seule de leurs occurrence
 \end{enumerate}
 Nous proposons ici une méthode récursive permettant d'effectuer cette énumération sans passer ni par le processus de compression ni celui de filtration. Ces deux processus sont hautement coûteux avec une complexité doublement exponentielle \(O(2^{2^{k}})\).
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 \textbf{Proposition 1} :  Considérons T = (Q’, I, r, \(\delta\)’) un squelette avec un ensemble de noeuds Q’, racine r et fonction de transition partiel \(\delta\)’ : Q’ \(\times\) \{0, 1\} \(\rightarrow\) Q’ \(\cup\) \{nil\}. La fonction de transition entière \(\delta\) : Q’ \(\times\) \{0, 1\} \(\rightarrow\) Q’ \(\cup\) \{\(\top\), \(\bot\)\} est la fonction de transition d'un bdd avec un squelette T si et seulement si pour tout noeuds \(\lambda\) \(\in\) Q’, noté \(\lambda\)0 = \(\delta\)(\(\lambda\), 0) et \(\lambda\)1 = \(\delta\)(\(\lambda\), 1), la paire (\(\lambda\)0, \(\lambda\)1) satisfait : 
 \begin{enumerate}
@@ -348,7 +345,7 @@ Nous proposons ici une méthode récursive permettant d'effectuer cette énumér
 \end{enumerate}
 \newpage
 Preuve. Puisque \(\delta\)(·, ·) doit étendre \(\delta\)’(·, ·), le cas 1. est triviale puisque nous devons étendre la fonction de transition uniquement où l'on a \(\delta\)(\(\lambda\), \(\sigma\)) = nil. Dans le cas 2., nous devons choisir pour (\(\lambda\)0, \(\lambda\)1) deux noeuds dans PT(\(\lambda\)). De plus \(\lambda\)0 != \(\lambda\)1 comme déclaré dans FACT 1.2 et un autre noeud avec le même index que \(\lambda\) ne peut pas avoir les même enfants (\(\lambda\)0, \(\lambda\)1) comme déclaré dans FACT 1.1. Dans le cas 3., l'enfant bas doit être choisie dans la pool de \(\lambda\) puisque l'on doit préserver le squelette. Dans le cas 4., l'enfant haut de \(\lambda\) est aussi choisi dans la pool de  \(\lambda\) ou dans TA(\(\lambda\)0) (et doit être diffèrent de \(\lambda\)0).
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Nous définissons maintenant un procédé permettant de calculer le nombre de bdd correspondant à un squelette donné, nous appellerons le nombre de bdd correspondant à un squelette S le poids de S.
 
@@ -369,7 +366,7 @@ Nous définissons maintenant un procédé permettant de calculer le nombre de bd
 Avec pts(\(\lambda\)) = \(\mid\mid profil(PT(\lambda)) \mid\mid\) et pts0 = \(\mid\mid profil(TA(\delta \textquoteright(\lambda,0))) \mid\mid\).
 
 Preuve. A partir de la proposition 1 nous énumérons tous les liens possibles (liant à un noeud) nous pouvons utiliser pour compléter la fonction de transition partielle. Dans le premier cas nous ne pouvons compléter que avec les liens déjà existant (comme déclaré dans 1) de proposition 1) le cas est déjà définie). Dans le second cas nous énumérons tous les liens possible de 2) de la proposition 1. Dans le troisième et quatrième cas nous faisons la même chose pour respectivement  3) et 4).
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Le poids d'un sous arbre est le poids cumulé de ses noeuds.
 
@@ -380,7 +377,7 @@ Le poids d'un sous arbre est le poids cumulé de ses noeuds.
 Dans le cas où le poids d'un noeud \(\lambda \in Q\textquoteright\) est nul ou négative nous savons que le squelette T est invalide parce que T n'est pas le squelette du moindre bdd. Ceci arrive uniquement lorsque \(\lambda\) a ses deux enfants égaux à nil (puisque l'on a nécessairement \(\mid\mid profil(PT(\lambda)) \mid\mid \geq\)2).
 
 Cette formule peut être aisément décrite de manière récursive, via une traversée en \(post_{o}\) où toutes les informations nécessaires pour calculer le poids du noeud ont déjà été traités.
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Nous notons \(T_{nk}\) l'ensemble des squelette de taille n et de nombre de variable k, et \(N_{nk}\) le nombre de bdd de taille n et de nombre de variable k.
 Pour déterminer \(N_{nk}\) tout ce que nous avons à faire est déterminer la totalité des squelette de taille n et de nombre de nombre de variable k et ensuite déterminer leurs poids, nous faisons ensuite l'addition de leurs poids.
@@ -391,7 +388,7 @@ Pour déterminer \(N_{nk}\) tout ce que nous avons à faire est déterminer la t
 Ce que nous voulions dans la section précédente était d'énumérer tout les bdd de taille n et de nombre de variable k. Pour ce faire nous devons déterminer les squelette de taille n et de nombre de variable k. Ceci n'est un processus aisé à informatiser.
 
 Nous définissons ici un processus récursive où nous construisons les squelette par chacun de leurs noeuds et des que l'on a déterminé que ses squelette ne sont pas valides on les ignore. 
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Nous définissons un squelette Tt en tant que tuple tel que:
 \[Tt = T\textquoteright \cup N_i \cup T\textquoteright\textquoteright \mid nil \]
@@ -407,7 +404,7 @@ Nous utiliserons la notation \(T_{m,p,s} \) pour considérer le squelette enraci
 \textbf{Proposition 3} :  Pour \(T_{m,p,s} \) nous considérons des tailles pour chaque sous squelette T’ \(\cup\) T’’ \(\in\) T de respectivement i et m – 1 – i, avec \(0\leq i\leq m-1\). Pour chacune des tailles de sous squelette considérés nous considérons chacune des valeurs d'index que l'on peut assigner à leurs racines.
 
 Nous avons ainsi un algorithme où nous considérons toute les tailles possible ainsi que les indexes des sous-squelette, le level rank de la racine étant déjà donné par le pool profil du squelette courant (ainsi que par le profil de T' dans le cas du level rank de T''). k correspond dans la suite à la taille de p.
-\newpage
+
 \begin{enumerate}
     \item Si m>0
         \begin{enumerate}
@@ -428,7 +425,7 @@ Nous avons ainsi un algorithme où nous considérons toute les tailles possible 
         \end{enumerate}
 \end{enumerate}
 Avec j = m-1-i, on note p[:i]=(\(p_0,p_1...p_i\)) pour designer dans un ensemble p que l'on ne considere que les elements ayant un index plus petit ou egale à i et \(p_{k}\) lorsqu'on designe l'element d'index k. On a egalement p1=p+profil(TA(T')) et K = \{0,1,...,k\}. Enfin on note W(T) le poids du squelette T et WTP(N,T',T'') le poids du noeud N qui a pour fils bas le squelette T' et pour fils haut le squelette T''.
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 Avec algorithme nous ne considérons pour chaque récursion que les squelette de même valeurs m, p et s. 
 En s'inspirant de ce procédé on peut écrire un algorithme COUNT(m,p,s) prenant en argument une taille de squelette m, un profil p et un level rank s et retournant un dictionnaire où chaque clé est le profil d'un squelette et la valeur la somme des poids des squelette ayant ce profil. 
@@ -443,7 +440,7 @@ Quelques exemples d'execution de la fonction COUNT:
 
 Dans le premier cas le dictionnaire retourné nous indique qu'il existe 56 squelette unique de taille 3 ayant pour profil (0,1,1,1), 2 ayant pour profil (0,2,0,1) et encore 2 ayant pour profil (0,0,2,1).
 
-\vspace{5mm} %5mm vertical space
+\vspace{5mm} 
 
 S'appuyant sur l'algorithme COUNT on definit N(n,k) qui renvoie le nombre de bdd de taille n et d'index k:
 \[N(n,k)=\underset{(t,w)\in COUNT(n-2,(2,0,...,0),0)}{\sum} w\]
@@ -453,8 +450,6 @@ S'appuyant sur l'algorithme COUNT on definit N(n,k) qui renvoie le nombre de bdd
 La complexité de l'algorithme COUNT est exponentionel de l'ordre de \(O(2^{3k^2/2+k})\).
 
 L'algorithme COUNT s'appuie sur la méthode de comptage et de génération des squelettes que l'on a décrit plus haut. Cet algorithme vérifie tout d'abord si le noeud courant est vide (m=0) si tel est le cas on sait qu'on est sur une nil-transition. Si le noeud courant n'est pas vide (m>0) on génère la totalité des sous arbre gauche et droit et déterminons récursivement leurs poids. Nous stockons leurs poids dans un dictionnaire selon leurs profil.
-
-On decrit l'algorithme COUNT en pseudo code ci-dessous.
 \begin{algorithm}
   \begin{algorithmic}[1]
     \Statex
@@ -470,17 +465,17 @@ On decrit l'algorithme COUNT en pseudo code ci-dessous.
         \For{$i \gets$ 0 to m$-1$}
             \State \Let{$d_0\gets \{\}$}
             \If{i=0}
-                \State \Let{$d_0 \gets \{():\sum_{k-1}^{i=0} p_i\}$}
+                \Let{$d_0 \gets \{():\sum_{k-1}^{i=0} p_i\}$}
             \Else
                 \For{$k_0 \gets$ 1 to $k-1$}
-                    \State \Let{$d_0 \gets d_0 \cup $COUNT$(i,p[:k_0-1],p_{k_0})$}
+                    \Let{$d_0 \gets d_0 \cup $COUNT$(i,p[:k_0-1],p_{k_0})$}
                 \EndFor
             \EndIf
             \For{$(l,w_0) \gets d_0$}
                 \State \Let{$d_1\gets \{\}$}
                 \State \Let{$p\textquoteright \gets p+l$}
                 \If{n-1-i=0}
-                    \State \Let{$d_1 \gets \{():-1+\sum_{k-1}^{i=0} p_i\textquoteright\}$}
+                    \Let{$d_1 \gets \{():-1+\sum_{k-1}^{i=0} p_i\textquoteright\}$}
                 \Else
                     \For{$k_1 \gets 1$ to $k-1$}
                         \State \Let{$d_1 \gets d_1 \cup $COUNT$(n-1-i,p'[:k_1-1],p'_{k_1})$}
@@ -490,14 +485,15 @@ On decrit l'algorithme COUNT en pseudo code ci-dessous.
                     \State \Let{$w \gets w_1*w_0$}
                     \State \Let{$t \gets l+r+e^{k}$}
                     \If{$t\in d$}
-                        \State \Let{$d[t] \gets d[t]+w$}
+                        \Let{$d[t] \gets d[t]+w$}
                     \Else
-                        \State \Let{$d \gets d \cup \{t:w\}$}
+                        \Let{$d \gets d \cup \{t:w\}$}
                     \EndIf\EndFor\EndFor\EndFor\EndIf
       \State \Return{$d$}
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
+
 \newpage
 \section{Unranking}
 Notre approche pour le unranking s'appuie sur la méthode introduite dans \cite{wilf} où l'on decompose un arbre binaire en ses sous arbre gauche et droits et en attribuant à chaque décomposition un ordre total pour un bdd de taille et d'index fixé.
@@ -714,8 +710,7 @@ Pour l'exemple de ces trois graphes on peut observer les tables de vérités pou
     \caption{A et B <=> C}
     \label{fig:and_abc}
 \end{figure}
-
-\newpage
+ \newpage
 
 \section{Conclusion}
 Il ne fait aucun doute que la methode presenté dans ce rapport offre un gain en temps et en espace gigantesque pour la resolution du probleme presenté, la generation de bdd. Nous avons vu que même avec un materiel limité nous pouvions generer un grand nombre de bdd en un temps records, ce qui n'etait pas possible avec la methode standard. 
