@@ -69,10 +69,10 @@ En plus de rappeler la méthode standard de génération des robdd, nous donnero
     \centering
     \includegraphics[scale=0.4]{robdd de presentation.png}
     \caption{Robdd généré avec la méthode du unranking}
-    \label{fig:ROBDD1}
+    \label{fig:ROBDD2}
 \end{figure}
 \newpage
- Avec notre méthode, nous avons pu générer le robdd de taille 10 sur 5 variables de la figure \ref{fig:ROBDD1}.
+ Avec notre méthode, nous avons pu générer le robdd de taille 8 sur 5 variables de la figure \ref{fig:ROBDD2}.
  
  La méthode de génération de robdd présenter dans ce rapport s'appuie sur celle présenter dans \cite{genitrini}, en plus d'implémenter en pseudo-code des algorithmes introduits dans ce papier nous en fournissons certains non décrits dans celui-ci.
 
@@ -85,7 +85,7 @@ Les diagrammes de fonction binaires sont principalement des outils pour les ing�
 
 Plus particulièrement, les circuits électroniques sont devenus si compliqués que les robdd sont à peine suffisants pour les traiter comme l'a noté Knuth il y a de ça plus de 10 ans \cite{knuth}. \medskip
 
-Un bdd (binary decision diagram) est un diagramme de décision binaire pouvant représenter une fonction booléenne. Il est important de souligner que l'utilisation des BDD est bien plus vaste que la seule application aux fonctions booléennes. Cependant, nous nous concentrerons sur celles-ci durant cette étude. Nous pouvons voir un exemple de BDD, celui de la figure 2 peut être utilisé pour représenter la fonction booléenne : \(\Bar{x3}(x2+\Bar{x3})+x3(\Bar{x2}+x1)\) , ainsi que la table de vérité ci dessous:
+Un bdd (binary decision diagram) est un diagramme de décision binaire pouvant représenter une fonction booléenne. Il est important de souligner que l'utilisation des BDD est bien plus vaste que la seule application aux fonctions booléennes. Cependant, nous nous concentrerons sur celles-ci durant cette étude. Nous pouvons voir un exemple de bdd, celui de la figure 2 peut être utilisé pour représenter la fonction booléenne : \(\Bar{x3}(x2+\Bar{x3})+x3(\Bar{x2}+x1)\) , ainsi que la table de vérité ci dessous:
 \vspace{5mm} 
 
 \begin{tabular}{llll}
@@ -106,7 +106,7 @@ Un bdd (binary decision diagram) est un diagramme de décision binaire pouvant r
 
 Un robdd (reduced ordered binary decision diagram) est comme son nom l'indique la forme réduite et ordonnée d'un bdd. Dans la littérature le terme bdd est presque toujours utilisé pour évoquer un robdd, nous ferons d'abord la distinction entre ces deux termes pour mettre l'accent sur l'aspect réduction. Les bdd que nous considérons dans ce rapport sont toujours ordonnés. Dans cette étude, lorsque nous ferons parlerons de BDD, nous ferons référence aux obdd  (ordered binary decision diagrams).\medskip
 
-Les robdd n'ont été introduit qu'en 1986 \cite{bryant_graph}. Assez tard dans l'histoire de l'informatique. Les robdd ont été une telle révolution que \cite{bryant_graph} est pendant des années resté le rapport le plus cité en science de l'informatique comme l'a noté Knuth:
+Les robdd n'ont été introduit qu'en 1986 \cite{bryant_graph}. Assez tard dans l'histoire de l'informatique. Les robdd ont été une telle révolution que \cite{bryant_graph} est pendant des années resté le papier le plus cité en science de l'informatique comme l'a noté Knuth:
 
 \begin{center}
     \emph{"His (Randal E. Bryant's) introduction to the subject [IEEE Trans. C-35 (1986),677-691] became for many years the most cited papers in all of computer science"}\cite{knuth}
@@ -146,7 +146,7 @@ Nous définissons la taille d'un robdd par le nombre de noeuds internes (non ter
 
 Pour énumérer ces structures dans la méthode que nous introduisons ici, nous utilisons de nombreuses propriétés des robdd.  Nous utilisons ensuite des méthodes dites de unranking et ranking basées sur le modèle standard introduit dans \cite{wilf} en définissant un ordre total sur les robdd et en décomposant chacun par une constitution de sous robdd.
 
-Le processus de ranking consiste à attribuer à chaque objet d'un ensemble un identifiant unique. Celui du unranking consiste à retrouver, à partir d'un identifiant, un objet au d'un ensemble d'arbres possibles.\medskip
+Le processus de ranking consiste à attribuer à chaque objet d'un ensemble un identifiant unique. Celui du unranking consiste à retrouver, à partir d'un identifiant, un objet au sein d'un ensemble.\medskip
 
 Nous obtenons grâce à cette méthode un générateur uniforme de robdd.\medskip
 
@@ -181,9 +181,9 @@ La manière dont nous ordonnons les noeuds est importante comme noté dans \cite
 
 La racine a un index k qui est l'index maximal de la bdd (ou robdd), et les noeuds terminaux ont des index nuls. Tous les noeuds internes (quand ils existent) ont des indexes allant de k à 0, non inclus. Pour un bdd l'index de la racine est le nombre de variables de la fonction booléenne qu'il représente, pas forcement pour un robdd.\medskip
 
-Un bdd associe à chaque affectation de variables une valeur de retour, pour connaître cette valeur nous allons tout d'abord à la racine, puis nous suivons un chemin en se fiant à la valeur de chaque variable données en entrée selon l'index du noeud courant. Si la variable d'index du noeud courant est 0 nous nous rendons à l'enfant bas du noeud courant, l'enfant haut si la variable a pour valeur 1. Nous finissons par arriver à un noeud terminal, que dans le reste de ce rapport nous appellerons feuille, de valeur \(\top\) (true) ou \(\bot\) (false) qui est la valeur de retour de la bdd pour les variables considérées.
+Un bdd associe à chaque affectation de variables une valeur de retour, pour connaître cette valeur nous allons tout d'abord à la racine, puis nous suivons un chemin en se fiant à la valeur de chaque variable données en entrée selon l'index du noeud courant. Si la variable d'index du noeud courant est 0 nous nous rendons à l'enfant bas du noeud courant, l'enfant haut si la variable a pour valeur 1. Nous finissons par arriver à un noeud terminal, que dans le reste de ce rapport nous appellerons feuille, de valeur \(\top\) (vrai) ou \(\bot\) (faux) qui est la valeur de retour de la bdd pour les variables considérées.
 
-Pour un bdd, de la figure \ref{fig:ROBDD1} si l'on donnait les variables 101 en tant qu'entrée elle retournerait \(\top\) (true). 
+Pour un bdd, de la figure \ref{fig:ROBDD1} si l'on donnait les variables 101 en tant qu'entrée elle retournerait \(\top\) (vrai). 
 
 La méthode classique pour obtenir un robdd est de réduire un arbre de décision binaire. 
 
@@ -208,6 +208,7 @@ Nous choisissons ici de considérer l'ordre de traversée \(post_{o}\) pour effe
 \vspace{5mm} 
 
 Nous pouvons désormais définir formellement le processus de compression.
+\vspace{5mm}
 
 \textbf{Compression} :  Considérons \(\Delta\) le bdd de la fonction f.  Quand le noeud \(\lambda\) est visité, \(\lambda\) étant l'enfant d'un noeud \(\mu\). Si un sous-arbre \(\Lambda\), celui qui a pour racine \(\lambda\), a déjà été vu lors de la traversée de \(\Delta\), sous arbre dont la racine est \(\omega\), alors \(\Lambda\) est supprimé de \(\Delta\) et le noeud \(\mu\) obtient un pointeur vers \(\omega\), remplaçant le lien allant précédemment de \(\mu\) à \(\lambda\). Une fois la traversée de \(\Delta\) achevée, le DAG résultant est le robdd de f.
 \vspace{5mm} 
@@ -226,6 +227,7 @@ Considérons un robdd \(\Delta\) = (Q, I, r, \(\delta\)). Q est l'ensemble de no
 \end{itemize}
 
 On note que Q a une taille forcément supérieure ou égale à 3.
+\vspace{5mm}
 
 On peut ainsi representer le dag de la figure \ref{fig:ROBDD1} par un robdd \(\Delta\) = (Q, I, r, \(\delta\)) ayant les propriétés suivantes:
 \begin{itemize}
@@ -291,11 +293,11 @@ ST(\(\lambda\)) = \{\(\theta\)’ \(\in\) D \(\mid\) \(\theta\)’ \(\Leftarrow_
     \caption{Dag}
     \label{fig:tree21_new}
 \end{figure}
-On considère la figure \ref{fig:tree21_new}. Les pointeurs sont représentés en rouge. Le squelette du robdd est le graphe réduit aux transitions en noirs.
+On considère la figure \ref{fig:tree21_new} contenant le dag d'un bdd \(\Delta\). Les nil-transitions de \(\Delta\) sont représentés en rouge, son squelette est le graphe réduit aux transitions en noirs.
 
 La pool du noeud entouré en vert est : \(\{x_2,x_2,x_1,x_1,\top,\bot\}\). 
 
-Le profil de ce bdd est : \{2,2,4,2,1\}.
+Le profil de \(\Delta\) est : \{2,2,4,2,1\}.
 
 \vspace{5mm} 
 
@@ -317,7 +319,7 @@ La méthode classique permettant d'énumérer les bdd ayant un nombre de variabl
 	\item
 	Supprimer les bdd réapparaissant plus d'une fois afin de ne conserver qu'une seule de leur occurrence
 \end{enumerate}
-Nous proposons ici une méthode récursive permettant d'effectuer cette énumération sans passer ni par le processus de compression ni celui du filtrage. Ces deux processus sont hautement coûteux avec une complexité doublement exponentielle \(O(2^{2^{k}})\).
+Nous proposons ici une méthode récursive permettant d'effectuer cette énumération sans passer ni par le processus de compression ni celui du filtrage. Ces deux processus étant hautement coûteux avec une complexité doublement exponentielle \(O(2^{2^{k}})\).
 \vspace{5mm} 
 
 \textbf{Proposition 1} :  Considérons T = (Q’, I, r, \(\delta\)’) un squelette avec un ensemble de noeuds Q’, racine r et fonction de transition partiel \(\delta\)’ : Q’ \(\times\) \{0, 1\} \(\rightarrow\) Q’ \(\cup\) \{nil\}. La fonction de transition entière \(\delta\) : Q’ \(\times\) \{0, 1\} \(\rightarrow\) Q’ \(\cup\) \{\(\top\), \(\bot\)\} est la fonction de transition d'un bdd avec un squelette T si et seulement si pour tout noeuds \(\lambda\) \(\in\) Q’, noté \(\lambda\)0 = \(\delta\)(\(\lambda\), 0) et \(\lambda\)1 = \(\delta\)(\(\lambda\), 1), la paire (\(\lambda\)0, \(\lambda\)1) satisfait : 
@@ -368,7 +370,6 @@ Avec pts(\(\lambda\)) = \(\mid\mid profil(PT(\lambda)) \mid\mid\) et pts0 = \(\m
 Preuve. A partir de la proposition 1 nous énumérons tous les liens possibles (liant à un noeud) nous pouvons utiliser pour compléter la fonction de transition partielle. Dans le premier cas nous ne pouvons compléter que avec les liens déjà existant (comme déclaré dans 1) de proposition 1) le cas est déjà défini). Dans le second cas nous énumérons tous les liens possible de 2) de la proposition 1. Dans le troisième et quatrième cas nous faisons la même chose pour respectivement  3) et 4).
 \vspace{5mm} 
 
-Le poids d'un sous arbre est le poids cumulé de ses noeuds.
 
 \textbf{Poids d'un squelette} : Considérons un squelette T = (Q’, I, \(\delta\)’, r), le poids W(T) de T est le poids cumulé de ses noeuds.
 \[W(T) = \prod wt(\lambda) \mid \lambda \in Q\textquoteright\]
@@ -391,21 +392,20 @@ Nous définissons ici un processus récursif où nous construisons les squelette
 \vspace{5mm} 
 
 Nous définissons un squelette Tt en tant que tuple tel que:
-$Tt=T' \cup N_i \cup T''| nil$ 
-%\[Tt = T\textquoteright \cup N_i \cup T\textquoteright\textquoteright \mid nil \]
-où \(N_i\) est un noeud d'index i. Ceci signifie que le squelette est soit réduit à nil soit à une racine et deux squelette. Nous désignerons dans la suite les squelette T' et T'' qui composent Tt par le terme de sous squelette.
+\[Tt = T\textquoteright \cup N_i \cup T\textquoteright\textquoteright \mid nil \]
+où \(N_i\) est un noeud d'index i. Ceci signifie que le squelette est soit réduit à nil soit à une racine et deux squelettes. Nous désignerons dans la suite les squelettes T' et T'' qui composent Tt par le terme de sous squelette.
 
-Pour considérer un squelette enraciné en r en particulier nous prendrons en compte trois de ses paramètres. Sa pool pT(T), le level rank de sa racine ST(r) et sa taille que nous désignerons par \(\mid\mid T\mid\mid\).
+Pour considérer un squelette en particulier nous prendrons en compte trois de ses paramètres. Sa pool, le level rank de sa racine et sa taille.
 
 Ces paramètres sont fondamentaux pour déterminer le poids des squelettes considérés.
 
-Nous utiliserons la notation \(T_{m,p,s} \) pour considérer le squelette enraciné en r de taille m (m =  \(\mid\mid T\mid\mid\)), de pool profil p (p = profil(pT(r))) et de level rank s (s = ST(r)) représenté par un tuple Tt tel décrit plus haut.
+Nous utiliserons la notation \(T_{m,p,s} \) pour considérer le squelette enraciné en r de taille m, de pool profil p et de level rank s (level rank de r) représenté par un tuple Tt tel décrit plus haut.
 
 
-\textbf{Proposition 3} :  Pour \(T_{m,p,s} \) nous considérons des tailles pour chaque sous squelette T’ \(\cup\) T’’ \(\in\) T de respectivement i et m – 1 – i, avec \(0\leq i\leq m-1\). Pour chacune des tailles de sous squelette considérée, nous déterminons chacune des valeurs d'indexs que l'on peut assigner à leur racine.
+\textbf{Proposition 3} :  Pour \(T_{m,p,s} \) nous considérons des tailles pour chaque sous squelette T’ \(\cup\) T’’ \(\in\) T de respectivement i et m – 1 – i, avec \(0\leq i\leq m-1\). Pour chacune des tailles de sous squelette considérée, nous déterminons chacune des valeurs d'indexes que l'on peut assigner à leurs racines.
 
-Nous avons ainsi un algorithme dans lequel nous considérons toute les tailles possible ainsi que les indexes des sous-squelette, le level rank de la racine étant déjà donné par le pool profil du squelette courant (ainsi que par le profil de T' dans le cas du level rank de T''). k correspond dans la suite à la taille de p.
-
+Nous avons ainsi un algorithme dans lequel nous considérons toute les tailles possible ainsi que les indexes des sous-squelettes, le level rank de la racine étant déjà donné par le pool profil du squelette courant (ainsi que par le profil de T' dans le cas du level rank de T''). k correspond dans la suite à la taille de p.
+\newpage
 \begin{enumerate}
     \item Si m>0
         \begin{enumerate}
@@ -440,9 +440,8 @@ Quelques exemples d'exécution de la fonction COUNT:
     \item COUNT(1,(2),1) nous retourne \{(0,1): 1\}
 \end{itemize}
 
-Dans le premier cas le dictionnaire retourné nous indique qu'il existe 56 squelette unique de taille 3 ayant pour profil (0,1,1,1), 2 ayant pour profil (0,2,0,1) et encore 2 ayant pour profil (0,0,2,1).
+Dans le premier cas le dictionnaire retourné nous indique qu'il existe 56 bdd de taille 3 ayant un squelette ayant pour profil (0,1,1,1), 2 ayant un squelette ayant pour profil (0,2,0,1) et encore 2 ayant un squelette ayant pour profil (0,0,2,1).
 
-\vspace{5mm} 
 
 S'appuyant sur l'algorithme COUNT on définit N(n,k) qui renvoie le nombre de bdd de taille n et d'index k:
 \[N(n,k)=\underset{(t,w)\in COUNT(n-2,(2,0,...,0),0)}{\sum} w\]
@@ -451,7 +450,7 @@ S'appuyant sur l'algorithme COUNT on définit N(n,k) qui renvoie le nombre de bd
 
 La complexité de l'algorithme COUNT est exponentiel de l'ordre de \(O(2^{3k^2/2+k})\).
 
-L'algorithme COUNT s'appuie sur la méthode de comptage et de génération des squelettes que l'on a décrit plus haut. Cet algorithme vérifie tout d'abord si le noeud courant est vide (m=0). Si tel est le cas, on sait qu'on est sur une nil-transition. Si le noeud courant n'est pas vide (m>0) on génère la totalité des sous arbres gauche et droit et déterminons récursivement leurs poids. Nous stockons leur poids dans un dictionnaire selon leurs profil.
+L'algorithme COUNT s'appuie sur la méthode de comptage et de génération des squelettes que l'on a décrit plus haut. Cet algorithme vérifie tout d'abord si le noeud courant est vide (m=0). Si tel est le cas, on sait qu'on est sur une nil-transition. Si le noeud courant n'est pas vide (m>0) on génère la totalité des sous arbres gauche et droit et déterminons récursivement leurs poids. Nous stockons enfin leur poids dans un dictionnaire selon leurs profil.
 \begin{algorithm}
   \begin{algorithmic}[1]
     \Statex
@@ -498,7 +497,7 @@ L'algorithme COUNT s'appuie sur la méthode de comptage et de génération des s
 
 \newpage
 \section{Unranking}
-Notre approche pour le unranking s'appuie sur la méthode introduite dans \cite{wilf} où l'on décompose un arbre binaire en ses sous arbre gauche et droits et en attribuant à chaque décomposition un ordre total pour un bdd de taille et d'index fixé.
+Notre approche pour le unranking s'appuie sur la méthode introduite dans \cite{wilf} où l'on décompose un arbre binaire en ses sous arbres gauche et droits et en attribuant à chaque décomposition un ordre total pour un bdd de taille et d'index fixé.
 
 En s'inspirant de la Proposition 3 on définie une méthode récursif b permettant de déterminer le nombre d'arbres binaires ayant une certaine taille n.
 
@@ -529,13 +528,12 @@ En s'appuyant recursivement sur cette methode, on obtient l'arbre de la figure \
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=3cm, height=4cm]{tree generation.png}
+    \includegraphics[width=2.5cm, height=3cm]{tree generation.png}
     \caption{Arbre de taille 7 et de rang 250 généré}
     \label{fig:generation d'arbre}
 \end{figure}
 
 En s'inspirant de cette même méthode, on peut définir une fonction DECOMPOSE(r\textquoteright,n\textquoteright,s,p\textquoteright) permettant de générer un bdd de taille n\textquoteright, ayant un profil p\textquoteright et un rang r\textquoteright. s est une variable contenant le squelette du bdd a générer.
-
 \begin{algorithm}
   \begin{algorithmic}[1]
     \Statex
@@ -588,7 +586,7 @@ En s'inspirant de cette même méthode, on peut définir une fonction DECOMPOSE(
 \newpage
 
 On décrit ensuite une fonction GENERATE(r,n,s,p) permettant de générer un squelette de taille n, de profil p et de rang r. La variable s est une variable globale qui contiendra en fin d'exécution le bdd généré.
-Cette fonction prend en argument un squelette s contenant les noeuds initialement dans la pool (ici \(\up\) et \(\bot\)) et crée au fur et a mesure le bdd souhaité en faisant appel à la fonction décompose et en mettant à jour le squelette.
+Cette fonction prend en argument un squelette s contenant les noeuds initialement dans la pool (ici \( \top \) et \( \bot \)) et crée au fur et à mesure le bdd souhaité en faisant appel à la fonction DECOMPOSE et en mettant à jour le squelette.
 
 \begin{algorithm}
   \begin{algorithmic}[1]
@@ -662,7 +660,7 @@ La méthode du unranking nous permet de mettre au point un générateur aléatoi
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.4]{arb_3104.png}
+    \includegraphics[scale=0.5]{arb_3104.png}
     \caption{Graphe(A) rang = 3104}
     \label{fig:graphe_A}
 \end{figure}
@@ -728,14 +726,14 @@ obtenir un BDD C. Pour une confirmation du test nous comparons les tables de vé
     \label{fig:graphe_C}
 \end{figure}
 
-
+\newpage
 \section{Conclusion}
-Il ne fait aucun doute que la méthode présenté dans ce rapport offre un gain en temps et en espace gigantesque pour la résolution du problème présenté, la génération de bdd. Nous avons vu que même avec un matériel limité, nous pouvions générer un grand nombre de bdd en un temps record. Ce qui n'était pas possible avec la méthode standard. 
+Il ne fait aucun doute que la méthode présenté dans ce rapport offre un gain en temps et en espace gigantesque pour la résolution du problème présenté, la génération de bdd. Nous avons vu que même avec un matériel limité, nous pouvions générer un grand nombre de bdd en un temps record. Ce qui n'était pas possible en pratique avec la méthode standard. 
 
 Cette génération en plus de sa simplicité, présente d'autres gains tels que la possibilité de l'adapter selon nos besoins. Nous pouvons ainsi l'adapter pour pouvoir générer d'autre types d'arbre de décisions.
-Mais comme nous l'avons vu ce gain ne se limite pas a la seule génération de bdd. Cette méthode offre une toute nouvelle manière d'appréhender ainsi que que de nouveaux moyens d'études des Binary Decision Diagram.
+Mais comme nous l'avons vu ce gain ne se limite pas a la seule génération de bdd. Cette méthode offre une toute nouvelle manière d'appréhender ainsi que que de nouveaux moyens d'études des Binary Decision Diagram. Dans ce rapport nous avons presentés la maniere avec laquelle nous avons incorporé cette méthode dans l'outil quickcheck.
 
-On note également que l'on pourrait encore améliorer notre méthode, par exemple en faisant en sorte de ne considérer que les bdd valides, ou en améliorant le processus de comptage. 
+On note également que l'on pourrait encore améliorer cette méthode, par exemple en faisant en sorte de ne considérer que les squelettes valides, la generation des squelettes etant la partie la plus lourde de notre code, ou en améliorant le processus de comptage. 
 \newpage
 \section{Annexe}
 \subsection{Annexe 1}
